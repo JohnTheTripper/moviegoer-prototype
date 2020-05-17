@@ -2,6 +2,9 @@
 mcu_data/
 movie_frames/
 
+# Saved Models
+saved_models/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
