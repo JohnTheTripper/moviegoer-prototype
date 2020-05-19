@@ -21,7 +21,7 @@ The *Data Management* notebook contains functions allowing for the automated pop
 During modeling, `ImageDataGenerator()` provided innate support for creating a Validation set of 20% of the Train data.
 
 ### Class Imbalance, and Abstaining from Data Augmentation
-There was a strong class imbalance. After labeling, MCU frames only made **45%** of frames. This caused serious issues during preliminary modeling, where every Test frame was predicted to be a non-MCU. The Test/Train population functions of *Data Management* notebook allow for a parameter *imbalance_removal*, which allows a certain percentage of non-MCU frames to be removed from the Training set. Various percentages (20%, 40%, 60%) were tested in the *Baseline Creation* notebook; 60% was ultimately chosen as it provided the best results (and provided an almost-equal distribution of mcu vs. non-MCU frames).
+There was a strong class imbalance. After labeling, MCU frames only made **26%** of frames. This caused serious issues during preliminary modeling, where every Test frame was predicted to be a non-MCU. The Test/Train population functions of *Data Management* notebook allow for a parameter *imbalance_removal*, which allows a certain percentage of non-MCU frames to be removed from the Training set. Various percentages (20%, 40%, 60%) were tested in the *Baseline Creation* notebook; 60% was ultimately chosen as it provided the best results (and provided an almost-equal distribution of mcu vs. non-MCU frames).
 
 Keras' `ImageDataGenerator()` provides excellent options for data augmentation, to increase the variety of data, especially for an underrepresented class. After careful consideration, I declined to use any of these.
 * width_shift_range, height_shift_range - There is plenty of variety in the frames' placement of the subject (character). Adding unncessary shifts may introduce cinemtaography problems that are NEVER violated: cutting off the sides of a character's head, or the bottom of their chin. It's actually okay to vary the headroom (space between top of head and top of frame), or even cut off the top of a character's head, but setting these parameters doesn't seem worth it.
@@ -29,3 +29,10 @@ Keras' `ImageDataGenerator()` provides excellent options for data augmentation, 
 * zoom_range - There's already lots of variety in the framing of each frame. Additionally, a frame's measure of focus and bokeh (background blur) is already a complicated function of lens focal length, aperture size, and distance-to-subject. Adding a *digital* "zoom" (essentially a crop) on top of that *optical* function may cause unnatural learning.
 * horizontal_flip - Because dialogue scenes typically use the shot-reverse-shot pattern, each character's shots are mirror images of each other, and we have an equal amount of left-facing-right and right-facing-left characters.
 * vertical_flip - We don't want anyone to appear upside-down.
+
+## Modeling
+There were three phases of modeling, each documented in a separate notebook:
+1. *baseline_creation* - This is where 9 models were evaluated to choose a basic model. 3 CNN shapes (6x6, 5x5, 4x4) were evaluated against 3 datasets (60%, 40%, or 20% of non-MCUs removed to mitigate class imbalance). Ultimately, a 6x6 CNN trained on the dataset with 60% of non-MCUs removed was chosen as the final configuration.
+2. *basic_tuning* - With the baseline model chosen, many new models were trained, each a copy of the baseline model, but with a single parameter tuned. By evaluating each parameter's impact on the MCU Recall and False Positive rate, we can decide which parameters were worth incorporating during final tuning. These parameters included number of units/filters per layer, or the addition of regularization/normalization layers.
+3. *modeling* - A baseline model was chosen, and iteratively tuned. The baseline model was successively tuned using the lessons learned from *basic_tuning*.
+
