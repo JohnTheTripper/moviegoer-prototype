@@ -24,8 +24,8 @@ During modeling, `ImageDataGenerator()` provided innate support for creating a V
 There was a strong class imbalance. After labeling, MCU frames only made **45%** of frames. This caused serious issues during preliminary modeling, where every Test frame was predicted to be a non-MCU. The Test/Train population functions of *Data Management* notebook allow for a parameter *imbalance_removal*, which allows a certain percentage of non-MCU frames to be removed from the Training set. Various percentages (20%, 40%, 60%) were tested in the *Baseline Creation* notebook; 60% was ultimately chosen as it provided the best results (and provided an almost-equal distribution of mcu vs. non-MCU frames).
 
 Keras' `ImageDataGenerator()` provides excellent options for data augmentation, to increase the variety of data, especially for an underrepresented class. After careful consideration, I declined to use any of these.
-* width_shift_range, height_shift_range
-* shear_range
-* zoom_range
-* horizontal_flip
-* vertical_flip
+* width_shift_range, height_shift_range - There is plenty of variety in the frames' placement of the subject (character). Adding unncessary shifts may introduce cinemtaography problems that are NEVER violated: cutting off the sides of a character's head, or the bottom of their chin. It's actually okay to vary the headroom (space between top of head and top of frame), or even cut off the top of a character's head, but setting these parameters doesn't seem worth it.
+* shear_range - MCUs are filmed at 90 degrees (or as close as possible), especially if the camera is set on a tripod. There is an exception, the Dutch angle, but this is rare, and almost never used for MCUs. (Cinematographers better have a very, very good reason for utilizing the Dutch angle). Setting this parameter is unnecessary.
+* zoom_range - There's already lots of variety in the framing of each frame. Additionally, a frame's measure of focus and bokeh (background blur) is already a complicated function of lens focal length, aperture size, and distance-to-subject. Adding a *digital* "zoom" (essentially a crop) on top of that *optical* function may cause unnatural learning.
+* horizontal_flip - Because dialogue scenes typically use the shot-reverse-shot pattern, each character's shots are mirror images of each other, and we have an equal amount of left-facing-right and right-facing-left characters.
+* vertical_flip - We don't want anyone to appear upside-down.
