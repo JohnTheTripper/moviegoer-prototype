@@ -1,5 +1,19 @@
 # moviegoer
 
+## Repository Content
+The repository contains the following files. The Modeling files, when read in order, provide a start-to-finish view of modeling, from data preparation all the way to model layer visualization.
+
+### Modeling Files
+1. *mcu_data_management.ipynb* - contains functions for controlling the Test/Train splits, with light EDA/visualizations
+2. *mcu_baseline_creation.ipynb* - evaluates 3 CNN model designs and 3 data configurations to decide the basic baseline model
+3. *mcu_basic_tuning.ipynb* - trains and evaluates variations of the baseline model, with a single parameter or attribute tuned, to see how that affects model performance
+4. *mcu_modeling.ipynb* - using the lessons learned in *basic_tuning*, iteratively modifies and trains sucessive models until no more improvements are possible
+5. *mcu_classification_evaluation.ipynb* - contains commentary and allows for visualizations of False Positives, False Negatives, etc., as well individual activation layers
+
+### Support Files
+- *metric_functions.py* - generates accuracy/loss visualizations and various metrics for evaluating each model
+- *extract.py* - generates screenshots from movie files
+
 ## Data Understanding and Labeling
 ### Data Extraction
 Frames (akin to screenshots) were extracted from 480p files from 40 films.
@@ -23,12 +37,7 @@ During modeling, `ImageDataGenerator()` provided innate support for creating a V
 ### Class Imbalance, and Abstaining from Data Augmentation
 There was a strong class imbalance. After labeling, MCU frames only made **26%** of frames. This caused serious issues during preliminary modeling, where every Test frame was predicted to be a non-MCU. The Test/Train population functions of *Data Management* notebook allow for a parameter *imbalance_removal*, which allows a certain percentage of non-MCU frames to be removed from the Training set. Various percentages (20%, 40%, 60%) were tested in the *Baseline Creation* notebook; 60% was ultimately chosen as it provided the best results (and provided an almost-equal distribution of mcu vs. non-MCU frames).
 
-Keras' `ImageDataGenerator()` provides excellent options for data augmentation, to increase the variety of data, especially for an underrepresented class. After careful consideration, I declined to use any of these.
-* width_shift_range, height_shift_range - There is plenty of variety in the frames' placement of the subject (character). Adding unncessary shifts may introduce cinemtaography problems that are NEVER violated: cutting off the sides of a character's head, or the bottom of their chin. It's actually okay to vary the headroom (space between top of head and top of frame), or even cut off the top of a character's head, but setting these parameters doesn't seem worth it.
-* shear_range - MCUs are filmed at 90 degrees (or as close as possible), especially if the camera is set on a tripod. There is an exception, the Dutch angle, but this is rare, and almost never used for MCUs. (Cinematographers better have a very, very good reason for utilizing the Dutch angle). Setting this parameter is unnecessary.
-* zoom_range - There's already lots of variety in the framing of each frame. Additionally, a frame's measure of focus and bokeh (background blur) is already a complicated function of lens focal length, aperture size, and distance-to-subject. Adding a *digital* "zoom" (essentially a crop) on top of that *optical* function may cause unnatural learning.
-* horizontal_flip - Because dialogue scenes typically use the shot-reverse-shot pattern, each character's shots are mirror images of each other, and we have an equal amount of left-facing-right and right-facing-left characters.
-* vertical_flip - We don't want anyone to appear upside-down.
+Keras' `ImageDataGenerator()` provides excellent options for data augmentation, to increase the variety of data, especially for an underrepresented class. After careful consideration, I declined to use any of these. A parameter-by-parameter rejection can be found in *baseline_creation*.
 
 ## Modeling
 There were three phases of modeling, each documented in a separate notebook:
