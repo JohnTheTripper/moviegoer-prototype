@@ -31,15 +31,19 @@ The repository contains the following files. The Modeling files, when read in or
 
 ## Data Understanding and Labeling
 ### Data Extraction
-Frames (akin to screenshots) were extracted from 480p files from 40 films.
+Frames (akin to screenshots) were extracted from 40 films: one frame every 8 seconds. This produced 675-900 frames per film, including frames from the beginning vanity logos to the ending credits. Each frame file is actually quite small, ranging from 50-80 kB, with an image size around 860x360. Though most films fit this cinema standard 2.39:1 ratio, some were wider or narrower. Still, no film deviated from this widescreen format enough to warrant resizing image files.
 
 ### Data Classification
 Frames were labeled by hand, into the two categories **MCU** and **non-MCU**. Each frames was visually inspected and categorized. Though it seems like a daunting task, an MCU is immediately recognizable to any experienced cinematographer, especially if it's part of a two-character dialogue scene, or as an over-the-shoulder shot.
 
-However, it is understood that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable to increase the MCU Recall rate.
+However, it is understood that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable, in the interest of increasing the MCU Recall rate.
+
+(IMBALANCE IMAGE)
 
 ### Frame Variety
-Exposing the model to as many films as possible will prepare it to "watch" future, unseen films. Every film has a unique look, starting with the medium on which it was shot (graininess of 35mm film vs. the pristine look of digital CMOS sensors). Film selection also attempted to maximize variety in scene lighting (well-lit comedies vs. moody dramas), actors (non-white and child actors), and production value (slick blockbusters vs. naturalistic indies).
+Only 200-400 frames were labeled per film, before moving on. Exposing the model to as many films as possible will prepare it to "watch" future, unseen films. Every film has a unique look, starting with the medium on which it was shot (graininess of 35mm film vs. the pristine look of digital CMOS sensors). Film selection also attempted to maximize variety in scene lighting (well-lit comedies vs. moody dramas), actors (non-white and child actors), and production value (slick blockbusters vs. naturalistic indies).
+
+(PERCENTAGE IMAGE AND COMMENTARY)
 
 ## Data Preparation
 ### Populating Test and Train
@@ -49,8 +53,11 @@ The *Data Management* notebook contains functions allowing for the automated pop
 
 During modeling, `ImageDataGenerator()` provided innate support for creating a Validation set of 20% of the Train data.
 
+### Frame Input
+`ImageDataGenerator.flow_from_directory()` was used to vectorize image data. For computational resource purposes, frames were resized to 128x128, and converted to grayscale. 128x128 is actually the minimum size necessary for a 6x6 CNN layer.
+
 ### Class Imbalance, and Abstaining from Data Augmentation
-There was a strong class imbalance. After labeling, MCU frames only made **26%** of frames. This caused serious issues during preliminary modeling, where every Test frame was predicted to be a non-MCU. The Test/Train population functions of *Data Management* notebook allow for a parameter *imbalance_removal*, which allows a certain percentage of non-MCU frames to be removed from the Training set. Various percentages (20%, 40%, 60%) were tested in the *Baseline Creation* notebook; 60% was ultimately chosen as it provided the best results (and provided an almost-equal distribution of mcu vs. non-MCU frames).
+There was a strong class imbalance: after labeling, MCU frames only made **26%** of frames. This caused serious issues during preliminary modeling, where nearly every Test frame was predicted to be a non-MCU. The custom Test/Train population functions of *Data Management* notebook allow for a parameter `imbalance_removal`, which allows a certain percentage of non-MCU frames to be removed from the Training set. Various percentages (20%, 40%, 60%) were tested in the *Baseline Creation* notebook; 60% was ultimately chosen as it provided the best results (and provided an almost-equal distribution of mcu vs. non-MCU frames).
 
 Keras' `ImageDataGenerator()` provides excellent options for data augmentation, to increase the variety of data, especially for an underrepresented class. After careful consideration, I declined to use any of these. A parameter-by-parameter rejection can be found in *baseline_creation*.
 
@@ -76,3 +83,5 @@ We can also see how the various activation layers visualize an example frame. At
 At the lowest activation layer (and not its pooling counterpart), 256 filters are looking at a 9x9 image. These images don't mean anything to us humans.
 
 (IMAGES)
+
+## Future Improvements to the MCU classifier and Continuation of the Moviegoer Project
