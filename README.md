@@ -1,6 +1,4 @@
-# moviegoer
-
-## Project Overview and MCU Scope
+## Project Overview and Scope
 ### Moviegoer Project
 The Moviegoer project has the lofty goal of unlocking the enormous wealth of emotional data within cinema, by turning films into structured data. Rather than create a single, all-encompassing model, the Moviegoer will be cobbled together iteratively, with various co-refinforcing modules based in transfer learning. There's been much research in the fields of emotional facial recognition, speech analysis, etc, and there are plenty of pre-trained models freely available. But all of these can't be applied to cinema until we can decode a movie's near-infinite possibilities into structured data.
 
@@ -43,12 +41,14 @@ Frames (akin to screenshots) were extracted from 40 films: one frame every 8 sec
 
 However, it needs to be emphasized that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable, in the interest of increasing the MCU Recall rate (more on Recall later).
 
-(IMBALANCE IMAGE, and frames per category)
+![class imbalance](/images/imbalance.png "class imbalance")
 
 ### Frame Variety
 Only 200-400 frames were labeled per film, before moving on. Exposing the model to as many films as possible will prepare it to "watch" future, unseen films. Every film has a unique look, starting with the medium on which it was shot (graininess of 35mm film vs. the pristine look of digital CMOS sensors). Film selection also attempted to maximize variety in scene lighting (well-lit comedies vs. moody dramas), actors (non-white and child actors), and production value (slick blockbusters vs. naturalistic indies).
 
-(PERCENTAGE IMAGE AND COMMENTARY)
+![frames per movie](/images/frames.png "frames per movie")
+
+![frames per movie](/images/framepercentages.png "percentage of mcu frames per movie")
 
 ## Data Preparation
 ### Populating Test and Train
@@ -74,7 +74,9 @@ There were three phases of modeling, each documented in a separate notebook:
 
 This is the final design and summary of the final model.
 
-(IMAGES)
+![model](/images/model.png "model")
+
+![summary](/images/summary.png "summary")
 
 ## Metrics and Evaluation
 Two caveats need to be mentioned about metrics:
@@ -83,19 +85,29 @@ Two caveats need to be mentioned about metrics:
 
 The final model has a Recall of 81% and False Positive Rate of 30%. This is acceptable, for now.
 
-(IMAGE)
-
+![results](/images/results.png "results")
 
 ## Model Classification Visualization
 With a saved tuned model, we can generate predictions on the Test set, and display samples of True Positives, True Negatives, False Positives, and False Negatives. This type of visualization helps to provide clarity to the decisions the model is making, and also reminds us of the context of this project: we're working with images not just arrays of 1s and 0s. And since data is hand-labeled, these False Positive/Negative "disagreements" help provide clarity for future labeling. 
 
+### True Positives
+![true positives](/images/truepos.png "true positives")
+### True Negatives
+![true negatives](/images/trueneg.png "true negatives")
+### False Positives
+![false positives](/images/falsepos.png "false positives")
+### False Negatives
+![false negatives](/images/falseneg.png "fales negatives")
+
+### First Activation Layer
 We can also see how the various activation layers visualize an example frame. At the input layer, 64 filters visualize the 128x128 image in various ways. We can clearly see the outline of the character.
 
-(IMAGES)
+![first activation layer](/images/firstact.png "first activation layer")
 
+### Last Activation Layer
 At the lowest activation layer (and not its pooling counterpart), 256 filters are looking at a 9x9 image. These images don't mean anything to us humans.
 
-(IMAGES)
+![last activation layer](/images/lastact.png "last activation layer")
 
 ## Future Improvements to the MCU classifier and Continuation of the Moviegoer Project
 The MCU classifier could use improvement, both in terms of more data, and perhaps a more stringent hand-labelling process. False Positives and False Negatives could be scrutinized to see what went wrong. Perhaps if the data were more consistent, (Dropout) Regularization and (Batch) Normalization would have a more positive impact on the model; neither of these were included in the model design because of poor performance.
