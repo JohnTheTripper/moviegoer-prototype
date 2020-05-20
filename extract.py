@@ -18,7 +18,7 @@ while cap.isOpened():
     if not ret:
         break
     if frameId % math.floor(frameRate * 8) == 0: # extract a frame once every 8 seconds
-        filename = '/media/collect/Toshiba/movie_frames/' + title + '_frame%d.jpg' % count
+        filename = '/movie_frames/' + title + '_frame%d.jpg' % count
         count += 1
         cv2.imwrite(filename, frame)
 cap.release()
