@@ -7,6 +7,8 @@ Currently, the scope of this project is limited to identifying specific cinemato
 
 The project's first large goal is the automatic identification of a film's two-character dialogue scenes, and this CNN image classification plays a key part in that identification. The two-character dialogue scene is the basic building block of most every film, allowing for plot advancement; in information theory parlance, this is where the "densest" information lies. These types of scenes are typically filmed using the medium close-up shot. More details on the MCU can be found below, but this is what our CNN is looking for:
 
+![mcu samples](/images/mcu.png "mcu samples")
+
 ### Frames, not Videos
 One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
 
@@ -31,7 +33,7 @@ The repository contains the following files. The Modeling files, when read in or
 
 ## Data Understanding and Labeling
 ### A Stronger Definition of Medium Close-Ups
-Medium close-ups are the standard cinematography shot of the classicly-shot two-character dialogue scene. They are typically a shot of the character from the waist-up, with little-to-no headroom (space between the top of their head and the frame). The character is framed to the left- or right-of-center; usually a character takes one side (e.g. left-) and the other character's shot is mirrored (e.g. right-).
+Medium close-ups are the standard cinematography shot of the classicly-shot two-character dialogue scene. They are typically a shot of the character from the torso-up, with little-to-no headroom (space between the top of their head and the frame). The character is framed to the left- or right-of-center; usually a character takes one side (e.g. left-) and the other character's shot is mirrored (e.g. right-).
 
 ### Data Extraction
 Frames (akin to screenshots) were extracted from 40 films: one frame every 8 seconds. This produced 675-900 frames per film, including frames from the beginning vanity logos to the ending credits. Each frame file is actually quite small, ranging from 50-80 kB, with an image size around 860x360. Though most films fit this cinema standard 2.39:1 ratio, some were wider or narrower. Still, no film deviated from this widescreen format enough to warrant resizing image files.
