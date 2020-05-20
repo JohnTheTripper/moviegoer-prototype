@@ -1,9 +1,16 @@
 # moviegoer
 
 ## Project Overview and MCU Scope
-(Overview text)
+### Moviegoer Project
+The Moviegoer project has the lofty goal of unlocking the enormous wealth of emotional data within cinema, by turning films into structured data. Rather than create a single, all-encompassing model, the Moviegoer will be cobbled together iteratively, with various co-refinforcing modules based in transfer learning. There's been much research in the fields of emotional facial recognition, speech analysis, etc, and there are plenty of pre-trained models freely available. But all of these can't be applied to cinema until we can decode a movie's near-infinite possibilities into structured data.
 
-(MCU text)
+### Current Scope: CNN Identification of Medium Close-Ups
+Currently, the scope of this project is limited to identifying specific cinematography frames (akin to screenshots) as **MCUs, or medium close-ups**. (As the scope of the project expands, this Readme, and the Repository layout will change accordingly.) A convolutional neural network will be designed to (binary) classify film frames as MCUs, or non-MCUs.
+
+The project's first goal is the automatic identification of a film's two-character dialogue scenes, and this CNN image classification plays a key part in that identification. The two-character dialogue scene is the basic building block of most every film, allowing for plot advancement; in information theory parlance, this is where the "densest" information lies. These types of scenes are typically filmed using the medium close-up shot. More details on the MCU can be found below, but this is what our CNN is looking for:
+
+### Frames, not Videos
+One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data.
 
 ## Important Links
 (Links)
@@ -34,11 +41,11 @@ The repository contains the following files. The Modeling files, when read in or
 Frames (akin to screenshots) were extracted from 40 films: one frame every 8 seconds. This produced 675-900 frames per film, including frames from the beginning vanity logos to the ending credits. Each frame file is actually quite small, ranging from 50-80 kB, with an image size around 860x360. Though most films fit this cinema standard 2.39:1 ratio, some were wider or narrower. Still, no film deviated from this widescreen format enough to warrant resizing image files.
 
 ### Data Classification
-Frames were labeled by hand, into the two categories **MCU** and **non-MCU**. Each frames was visually inspected and categorized. Though it seems like a daunting task, an MCU is immediately recognizable to any experienced cinematographer, especially if it's part of a two-character dialogue scene, or as an over-the-shoulder shot.
+Frames were labeled by hand, into the two categories **MCU** and **non-MCU**. Each frame was visually inspected and categorized. Though it seems like a daunting task, an MCU is immediately recognizable to any experienced cinematographer, especially if it's part of a two-character dialogue scene, or as an over-the-shoulder shot.
 
-However, it is understood that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable, in the interest of increasing the MCU Recall rate.
+However, it needs to be emphasized that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable, in the interest of increasing the MCU Recall rate.
 
-(IMBALANCE IMAGE)
+(IMBALANCE IMAGE, and frames per category)
 
 ### Frame Variety
 Only 200-400 frames were labeled per film, before moving on. Exposing the model to as many films as possible will prepare it to "watch" future, unseen films. Every film has a unique look, starting with the medium on which it was shot (graininess of 35mm film vs. the pristine look of digital CMOS sensors). Film selection also attempted to maximize variety in scene lighting (well-lit comedies vs. moody dramas), actors (non-white and child actors), and production value (slick blockbusters vs. naturalistic indies).
@@ -71,9 +78,9 @@ This is the final design and summary of the final model.
 
 (IMAGES)
 
-## Model Evaluation and Visualization
-(ADD NOTE ABOUT RECALL AND FALSE POSITIVES)
+(ADD NOTE ABOUT RECALL AND FALSE POSITIVES, AND THEIR METRICS)
 
+## Model Classification Visualization
 With a saved tuned model, we can generate predictions on the Test set, and display samples of True Positives, True Negatives, False Positives, and False Negatives. This type of visualization helps to provide clarity to the decisions the model is making, and also reminds us of the context of this project: we're working with images not just arrays of 1s and 0s. And since data is hand-labeled, these False Positive/Negative "disagreements" help provide clarity for future labeling. 
 
 We can also see how the various activation layers visualize an example frame. At the input layer, 64 filters visualize the 128x128 image in various ways. We can clearly see the outline of the character.
