@@ -12,8 +12,8 @@ The project's first large goal is the automatic identification of a film's two-c
 ### Frames, not Videos
 One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
 
-## Important Links
-(Links)
+## Project Links
+[Presentation for CNN Image Classifier](https://docs.google.com/presentation/d/1JytHUAu_NN734GOuSn8xJDm-2z6jJcKcaj_O8DvddRw/edit?usp=sharing)
 
 
 ## Repository Files
