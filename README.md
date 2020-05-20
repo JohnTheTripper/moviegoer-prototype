@@ -7,10 +7,10 @@ The Moviegoer project has the lofty goal of unlocking the enormous wealth of emo
 ### Current Scope: CNN Identification of Medium Close-Ups
 Currently, the scope of this project is limited to identifying specific cinematography frames (akin to screenshots) as **MCUs, or medium close-ups**. (As the scope of the project expands, this Readme, and the Repository layout will change accordingly.) A convolutional neural network will be designed to (binary) classify film frames as MCUs, or non-MCUs.
 
-The project's first goal is the automatic identification of a film's two-character dialogue scenes, and this CNN image classification plays a key part in that identification. The two-character dialogue scene is the basic building block of most every film, allowing for plot advancement; in information theory parlance, this is where the "densest" information lies. These types of scenes are typically filmed using the medium close-up shot. More details on the MCU can be found below, but this is what our CNN is looking for:
+The project's first large goal is the automatic identification of a film's two-character dialogue scenes, and this CNN image classification plays a key part in that identification. The two-character dialogue scene is the basic building block of most every film, allowing for plot advancement; in information theory parlance, this is where the "densest" information lies. These types of scenes are typically filmed using the medium close-up shot. More details on the MCU can be found below, but this is what our CNN is looking for:
 
 ### Frames, not Videos
-One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data.
+One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
 
 ## Important Links
 (Links)
@@ -30,20 +30,18 @@ The repository contains the following files. The Modeling files, when read in or
 - *metric_functions.py* - generates accuracy/loss visualizations and various metrics for evaluating each model
 - *extract.py* - generates screenshots from movie files
 
-## More about MCUs
-(MCUs)
-
-(Accuracy and False Positives)
-
 
 ## Data Understanding and Labeling
+### A Stronger Definition of Medium Close-Ups
+Medium close-ups are the standard cinematography shot of the classicly-shot two-character dialogue scene. They are typically a shot of the character from the waist-up, with little-to-no headroom (space between the top of their head and the frame). The character is framed to the left- or right-of-center; usually a character takes one side (e.g. left-) and the other character's shot is mirrored (e.g. right-).
+
 ### Data Extraction
 Frames (akin to screenshots) were extracted from 40 films: one frame every 8 seconds. This produced 675-900 frames per film, including frames from the beginning vanity logos to the ending credits. Each frame file is actually quite small, ranging from 50-80 kB, with an image size around 860x360. Though most films fit this cinema standard 2.39:1 ratio, some were wider or narrower. Still, no film deviated from this widescreen format enough to warrant resizing image files.
 
 ### Data Classification
-Frames were labeled by hand, into the two categories **MCU** and **non-MCU**. Each frame was visually inspected and categorized. Though it seems like a daunting task, an MCU is immediately recognizable to any experienced cinematographer, especially if it's part of a two-character dialogue scene, or as an over-the-shoulder shot.
+11,432 frames were labeled by hand, into the two categories **MCU** (3,023) and **non-MCU** (8,409). Each frame was visually inspected and categorized. Though it seems like a daunting task, an MCU is immediately recognizable to any experienced cinematographer, especially if it's part of a two-character dialogue scene, and/or as an over-the-shoulder shot.
 
-However, it needs to be emphasized that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable, in the interest of increasing the MCU Recall rate.
+However, it needs to be emphasized that hand-labeling is more of an art than a science. Leeway was skewed toward labeling as frames as MCUs, such as during non-dialogue scenes but the shot happens to be an MCU, or when it's a toss-up between MCU and non-MCU but during a dialogue scene. False Positives are tolerable, in the interest of increasing the MCU Recall rate (more on Recall later).
 
 (IMBALANCE IMAGE, and frames per category)
 
@@ -78,7 +76,15 @@ This is the final design and summary of the final model.
 
 (IMAGES)
 
-(ADD NOTE ABOUT RECALL AND FALSE POSITIVES, AND THEIR METRICS)
+## Metrics and Evaluation
+Two caveats need to be mentioned about metrics:
+1. Since the MCU classifier is just one "confirmation" of the overall co-reinforcing dialogue scene identification goal, I am prioritizing Recall, allowing for a few False Positives to slip through. This is because both "confirmations" need to be positive to identify a dialogue scene. So Recall was the most important metric, with a trade-off of the False Positive Rate (non-MCUs predicted to be MCUs).
+2. Because of the large class imbalance in the Test set, accuracy is heavily skewed in terms of non-MCU predictions.
+
+The final model has a Recall of 81% and False Positive Rate of 30%. This is acceptable, for now.
+
+(IMAGE)
+
 
 ## Model Classification Visualization
 With a saved tuned model, we can generate predictions on the Test set, and display samples of True Positives, True Negatives, False Positives, and False Negatives. This type of visualization helps to provide clarity to the decisions the model is making, and also reminds us of the context of this project: we're working with images not just arrays of 1s and 0s. And since data is hand-labeled, these False Positive/Negative "disagreements" help provide clarity for future labeling. 
@@ -92,3 +98,6 @@ At the lowest activation layer (and not its pooling counterpart), 256 filters ar
 (IMAGES)
 
 ## Future Improvements to the MCU classifier and Continuation of the Moviegoer Project
+The MCU classifier could use improvement, both in terms of more data, and perhaps a more stringent hand-labelling process. False Positives and False Negatives could be scrutinized to see what went wrong. Perhaps if the data were more consistent, (Dropout) Regularization and (Batch) Normalization would have a more positive impact on the model; neither of these were included in the model design because of poor performance.
+
+The next phase of the Moviegoer Project will the other half of the two-character dialogue scene identification: automated HAC clustering. These process will attempt to automatically identify two characters having a dialogue, and then using the CNN classifer to determine if the shot is an MCU. Confirmations from both halves will result in a positive identification of the two-character dialogue scene.
