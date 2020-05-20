@@ -1,6 +1,15 @@
 # moviegoer
 
-## Repository Content
+## Project Overview and MCU Scope
+(Overview text)
+
+(MCU text)
+
+## Important Links
+(Links)
+
+
+## Repository Files
 The repository contains the following files. The Modeling files, when read in order, provide a start-to-finish view of modeling, from data preparation all the way to model layer visualization.
 
 ### Modeling Files
@@ -13,6 +22,12 @@ The repository contains the following files. The Modeling files, when read in or
 ### Support Files
 - *metric_functions.py* - generates accuracy/loss visualizations and various metrics for evaluating each model
 - *extract.py* - generates screenshots from movie files
+
+## More about MCUs
+(MCUs)
+
+(Accuracy and False Positives)
+
 
 ## Data Understanding and Labeling
 ### Data Extraction
@@ -41,7 +56,23 @@ Keras' `ImageDataGenerator()` provides excellent options for data augmentation, 
 
 ## Modeling
 There were three phases of modeling, each documented in a separate notebook:
-1. *baseline_creation* - This is where 9 models were evaluated to choose a basic model. 3 CNN shapes (6x6, 5x5, 4x4) were evaluated against 3 datasets (60%, 40%, or 20% of non-MCUs removed to mitigate class imbalance). Ultimately, a 6x6 CNN trained on the dataset with 60% of non-MCUs removed was chosen as the final configuration.
+1. *baseline_creation* - This is where 9 models were evaluated to choose a basic model. 3 CNN designs (6x6, 5x5, 4x4) were evaluated against 3 datasets (60%, 40%, or 20% of non-MCUs removed to mitigate class imbalance). Ultimately, a 6x6 CNN trained on the dataset with 60% of non-MCUs removed was chosen as the final configuration.
 2. *basic_tuning* - With the baseline model chosen, many new models were trained, each a copy of the baseline model, but with a single parameter tuned. By evaluating each parameter's impact on the MCU Recall and False Positive rate, we can decide which parameters were worth incorporating during final tuning. These parameters included number of units/filters per layer, or the addition of regularization/normalization layers.
 3. *modeling* - A baseline model was chosen, and iteratively tuned. The baseline model was successively tuned using the lessons learned from *basic_tuning*.
 
+This is the final design and summary of the final model.
+
+(IMAGES)
+
+## Model Evaluation and Visualization
+(ADD NOTE ABOUT RECALL AND FALSE POSITIVES)
+
+With a saved tuned model, we can generate predictions on the Test set, and display samples of True Positives, True Negatives, False Positives, and False Negatives. This type of visualization helps to provide clarity to the decisions the model is making, and also reminds us of the context of this project: we're working with images not just arrays of 1s and 0s. And since data is hand-labeled, these False Positive/Negative "disagreements" help provide clarity for future labeling. 
+
+We can also see how the various activation layers visualize an example frame. At the input layer, 64 filters visualize the 128x128 image in various ways. We can clearly see the outline of the character.
+
+(IMAGES)
+
+At the lowest activation layer (and not its pooling counterpart), 256 filters are looking at a 9x9 image. These images don't mean anything to us humans.
+
+(IMAGES)
