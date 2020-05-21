@@ -1,6 +1,7 @@
-# MCU Frame Data
+# Frame Folders
 mcu_data/
 movie_frames/
+dialogue_frames/
 
 # Saved Models
 saved_models/
