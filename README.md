@@ -115,3 +115,9 @@ At the lowest activation layer (and not its pooling counterpart), 256 filters ar
 The MCU classifier could use improvement, both in terms of more data, and perhaps a more stringent hand-labelling process. False Positives and False Negatives could be scrutinized to see what went wrong. Perhaps if the data were more consistent, (Dropout) Regularization and (Batch) Normalization would have a more positive impact on the model; neither of these were included in the model design because of poor performance.
 
 The next phase of the Moviegoer Project will the other half of the two-character dialogue scene identification: automated HAC clustering. These process will attempt to automatically identify two characters having a dialogue, and then using the CNN classifer to determine if the shot is an MCU. Confirmations from both halves will result in a positive identification of the two-character dialogue scene.
+
+
+### Movie Copyright
+40 films were used to train the CNN model, and additional films may be used for further training and development. Because these films are copyrighted, neither the model nor the dataset will be publicly released. A list of films used in this project is available in the movies_cited.md file.
+
+This project is strictly for educational and research purposes.
