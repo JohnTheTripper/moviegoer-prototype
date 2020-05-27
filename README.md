@@ -19,6 +19,9 @@ One final note about frames: this project will strictly be using frames (screens
 ## Repository Files
 The repository contains the following files. The Modeling files, when read in order, provide a start-to-finish view of modeling, from data preparation all the way to model layer visualization.
 
+### Scene Clustering File
+- scene_clustering.ipynb - illustrates a start-to-finish walkthrough of the five-step algorithm of generating scene boundaries
+
 ### Modeling Files
 1. *mcu_data_management.ipynb* - contains functions for controlling the Test/Train splits, with light EDA/visualizations
 2. *mcu_baseline_creation.ipynb* - evaluates 3 CNN model designs and 3 data configurations to decide the basic baseline model
@@ -111,13 +114,18 @@ At the lowest activation layer (and not its pooling counterpart), 256 filters ar
 
 ![last activation layer](/images/lastact.png "last activation layer")
 
-## Future Improvements to the MCU classifier and Continuation of the Moviegoer Project
+## Future Improvements
+### MCU Classifier
 The MCU classifier could use improvement, both in terms of more data, and perhaps a more stringent hand-labelling process. False Positives and False Negatives could be scrutinized to see what went wrong. Perhaps if the data were more consistent, (Dropout) Regularization and (Batch) Normalization would have a more positive impact on the model; neither of these were included in the model design because of poor performance.
 
-The next phase of the Moviegoer Project will the other half of the two-character dialogue scene identification: automated HAC clustering. These process will attempt to automatically identify two characters having a dialogue, and then using the CNN classifer to determine if the shot is an MCU. Confirmations from both halves will result in a positive identification of the two-character dialogue scene.
+### Scene Clustering
+The clustering performed very well for certain scenes, but failed to identify others. Additional shot patterns (not just A/B/A/B) can be identified through further analysis. We can improve our existing scene boundary definitions, perhaps by looking for clusters that are similar (but not quite the same). This may help identify establishing (scene-starting) shots, which the current algorithm has never included.
+
+## Continuation of the Moviegoer Project
+The next phase of the Moviegoer project will use the defined scene boundaries to implement transfer learning on individual scenes. This will include NLP analysis of subtitle files, emotional facial analysis, facial character recognition, etc.
 
 
-### Movie Copyright
+## Movie Copyright
 40 films were used to train the CNN model, and additional films may be used for further training and development. Because these films are copyrighted, neither the model nor the dataset will be publicly released. A list of films used in this project is available in the movies_cited.md file.
 
 This project is strictly for educational and research purposes.
