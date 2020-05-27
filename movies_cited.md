@@ -4,7 +4,7 @@
 - *Ballon*. Directed by Michael Herbig, herbX Film, 2018.
 - *Black and Blue*. Directed by Deon Taylor, Hidden Empire Film Group, 2019.
 - *Booksmart*. Directed by Olivia Wilde, Annapurna Pictures, 2019.
-- *The Boy*. Directed by William Brent Bell, Lakeshore Entertainment, 2016.
+- *Boy, The*. Directed by William Brent Bell, Lakeshore Entertainment, 2016.
 - *Breakthrough*. Directed by Roxann Dawson, Fox 2000 Pictures, 2019.
 - *Brooklyn*. Directed by John Crowley, Fox Searchlight Pictures, 2015.
 - *Children of Men*. Directed by Alfonso Cuarón, Universal Pictures, 2006.
@@ -20,13 +20,13 @@
 - *Jay and Silent Bob Reboot*. Directed by Kevin Smith, View Askew Productions, 2019.
 - *Lying and Stealing*. Directed by Matt Aselton, Cota Films, 2019.
 - *Ma*. Directed by Tate Taylor, Blumhouse Productions, 2019.
-- *A Madea Family Funeral*. Directed by Tyler Perry, Tyler Perry Studios, 2019.
+- *Madea Family Funeral, A*. Directed by Tyler Perry, Tyler Perry Studios, 2019.
 - *Midnight in Paris*. Directed by Woody Allen, Gravier Productions, 2011.
 - *Molly's Game*. Directed by Aaron Sorkin, STX Films, 2017.
 - *Monte Carlo*. Directed by Thomas Bezucha, Fox 2000 Pictures, 2011.
 - *No Escape*. Directed by John Erick Dowdle, Bold Films, 2015.
 - *Parasite*. Directed by Bong Joon-ho, Barunson E&A, 2019.
-- *The Parts You Lose*. Directed by Christopher Cantwell, The H Collective, 2019.
+- *Parts You Lose, The*. Directed by Christopher Cantwell, The H Collective, 2019.
 - *Plus One*. Directed by Jeff Chan, Red Hour Productions, 2019.
 - *Preggoland*. Directed by Jacob Tierney, Optic Nerve Films, 2014.
 - *Ready or Not*. Directed by Matt Bettinelli-Olpin and Tyler Gillett, Mythology Entertainment, 2019.
