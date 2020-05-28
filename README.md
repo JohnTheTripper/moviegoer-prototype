@@ -1,5 +1,5 @@
 # Project Overview and Scope
-## Can a Machine Watch A Movie?
+## Can a Machine Watch a Movie?
 The Moviegoer project has the lofty goal of unlocking the enormous wealth of emotional data within cinema, by turning films into structured data. Rather than create a single, all-encompassing model, Moviegoer will be cobbled together iteratively, with various co-refinforcing modules based in transfer learning. There's been much research in the fields of emotional facial recognition, speech analysis, etc, and there are plenty of pre-trained models freely available. But none of these can't be applied to cinema until we can decode a movie's near-infinite possibilities into structured data.
 
 ## Current Scope: Identifying Two-Character Dialogue Scenes
@@ -170,8 +170,9 @@ The MCU classifier could use improvement, both in terms of more data, and perhap
 The clustering performed very well for certain scenes, but failed to identify others. Additional shot patterns (not just A/B/A/B) can be identified through further analysis. We can improve our existing scene boundary definitions, perhaps by looking for clusters that are similar (but not quite the same). This may help identify establishing (scene-starting) shots, which the current algorithm has never included.
 
 ## Continuation of the Moviegoer Project
-The next phase of the Moviegoer project will use the defined scene boundaries to implement transfer learning on individual scenes. This will include NLP analysis of subtitle files, emotional facial analysis, facial character recognition, etc.
+The next phase of Moviegoer will use the defined scene boundaries to implement transfer learning on individual scenes. This will include NLP analysis of subtitle files, emotional facial analysis, facial character recognition, etc.
 
+![transfer learning](/images/transfer.png "transfer learning")
 
 # Movie Copyright
 40 films were used to train the CNN model, and additional films may be used for further training and development. Because these films are copyrighted, neither the model nor the dataset will be publicly released. A list of films used in this project is available in the movies_cited.md file.
