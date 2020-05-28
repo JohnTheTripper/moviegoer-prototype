@@ -34,7 +34,7 @@ The repository contains the following files. The Modeling files, when read in or
 - *metric_functions.py* - generates accuracy/loss visualizations and various metrics for evaluating each model
 - *extract.py* - generates screenshots from movie files
 
-# HAC Clustering of Clustered Shots to Identify Scene Boundaries
+# HAC Clustering of Frames into Shots, to Identify Scene Boundaries
 ## Overview
 Our goal is to, given a set of input frames, identify the start frame and end frame for individual scenes. (This is completely unsupervised, but for the purposes of explanation, I'll comment on our progress, as well as provide visualization.) In this example, 400 frames, one taken every second from *The Hustle* (2019) are being fed into the algorithm. Keras' VGG16 image model is used to vectorize these images, and then unsupervised HAC clustering is applied to group similar frames into clusters. Frames with equal cluster values are similar, so a set of three consecutive frames with the same cluster value could represent a three-second shot of a character.
 
