@@ -47,9 +47,37 @@ In this example, we have two partial scenes and two complete scenes. Our goal is
 ![target clusters](/images/clusters.png "target clusters")
 
 ## Five-Step Algorithm for Designating Scene Boundaries
+### Step 1: Finding the A/B/A/B Shot Pattern
+Among all 400 frames, we look for any pairs of shots that form an A/B/A/B pattern.
 ![abab pattern and mcu example](/images/abab.png "abab pattern and mcu example")
 
-https://github.com/JohnTheTripper/moviegoer/blob/master/images/abab.png
+### Step 2: Checking for MCUs
+Finding four A/B/A/B patterns, we run each shot through the MCU image classifier (more details on the classifier below). Two of the patterns were rejected because they contain a shot that doesn't pass the MCU check. In the below image, the top shot-pair represents our example scene.
+![abab pattern and mcu example](/images/mcu_check.png "abab pattern and mcu example")
+
+### Step 3: Designating a Preliminary Scene Boundary: Anchor Start/End
+Once we've confirmed that we're looking at Medium Close-Up shots, we can reasonably believe that we're looking at a two-character dialogue scene. We look for the first and last appearances of either shot (regardless of A or B). These frames define the Anchor Start and Anchor End Frames, a preliminary scene boundary.
+![anchor boundaries](/images/anchors.png "anchor boundaries")
+
+### Step 4: Identify Cutaways
+In between the Anchor Start and Anchor End are many other shots known as cutaways. These may represent any of the following:
+- POV shots, showing what characters are looking at offscreen
+- Inserts, different shots of Speaker A or B, such as a one-off close-up
+- Other characters, both silent and speaking
+After we identify these cutaways, we may be able to expand the scene's start frame backward, and the end frame forward. If we see these cutaways again, but before the Anchor start or after the Anchor end, they must still be part of the scene.
+![cutaways](/images/cutaways.png "cutaways")
+
+### Step 5a: Extending the Scene End
+After the Anchor End are three frames with a familiar shot (cluster). Since we saw this cluster earlier, as a Cutaway, we incorporate these three frames into our scene. The following frames are unfamiliar, and are indeed not part of this scene.
+![extending the scene end](/images/extension_end.png "extending the scene end")
+
+### Step 5b: Extending the Scene Start
+We apply this same tecnique to the scene's beginning, in the opposite direction. We find many Cutaways, so we keep progressing earlier and earlier until no more Cutaways are found.
+![extending the scene start](/images/extension_start.png "extending the scene start")
+
+## Evaluation
+Below is a visualization of the total frames in the scene. This algorithm managed to label most frames of the scene. Although some frames were missed at the scene's beginning, these are non-speaking introductory frames. The scene takes some time to get started, and we've indeed captured all frames containing dialogue, the most important criteria.
+![evaluation](/images/boundaries.png "evaluation")
 
 # Identification of Medium Close-Ups Using CNN Image Classification
 ## Data Understanding and Labeling
