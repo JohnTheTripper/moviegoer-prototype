@@ -7,13 +7,15 @@ As a preliminary starting point, we'll try and identify the basic building block
 - They're visually easy to identify. They are often shot using the the **Medium Close-Up shot**, a very recognizable cinematography shot. We will build a **CNN image classifier** from scratch to determine if frames/shots are Medium Close-Ups.
 - They are comprised of predictable patterns of shots. In a two-character dialogue, the shots are usually presented as a pattern of **speaker A, speaker B, speaker A, speaker B**. Using **Keras' VGG16 image model and HAC clustering**, we will group individual frames into shots, and look for this A/B/A/B pattern.
 
+Below is an example of a series of frames, grouped into shots, which form the A/B/A/B pattern. Each shot is an example of a Medium-Close-Up.
+
+![abab pattern and mcu example](/images/abab.png "abab pattern and mcu example")
 
 ## Frames, not Videos
 One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
 
 ## Project Links
 [Presentation for CNN Image Classifier](https://docs.google.com/presentation/d/1JytHUAu_NN734GOuSn8xJDm-2z6jJcKcaj_O8DvddRw/edit?usp=sharing)
-
 
 ## Repository Files
 The repository contains the following files. The Modeling files, when read in order, provide a start-to-finish view of modeling, from data preparation all the way to model layer visualization.
@@ -32,7 +34,24 @@ The repository contains the following files. The Modeling files, when read in or
 - *metric_functions.py* - generates accuracy/loss visualizations and various metrics for evaluating each model
 - *extract.py* - generates screenshots from movie files
 
-# CNN Image Classification to Identify Medium Close-Ups
+# HAC Clustering of Clustered Shots to Identify Scene Boundaries
+## Overview
+Our goal is to, given a set of input frames, identify the start frame and end frame for individual scenes. (This is completely unsupervised, but for the purposes of explanation, I'll comment on our progress, as well as provide visualization.) In this example, 400 frames, one taken every second from *The Hustle* (2019) are being fed into the algorithm. Keras' VGG16 image model is used to vectorize these images, and then unsupervised HAC clustering is applied to group similar frames into clusters. Frames with equal cluster values are similar, so a set of three consecutive frames with the same cluster value could represent a three-second shot of a character.
+
+Here is the vectorization of our sample 400 frames from *The Hustle*.
+
+![all frames](/images/allframes.png "all frames")
+
+In this example, we have two partial scenes and two complete scenes. Our goal is to identify the scene boundaries of each scene; in this example, we'll try and identify the boundaries of the blue scene. Again, I've colored in this visualization manually, to illustrate our "target".
+
+![target clusters](/images/clusters.png "target clusters")
+
+## Five-Step Algorithm for Designating Scene Boundaries
+![abab pattern and mcu example](/images/abab.png "abab pattern and mcu example")
+
+https://github.com/JohnTheTripper/moviegoer/blob/master/images/abab.png
+
+# Identification of Medium Close-Ups Using CNN Image Classification
 ## Data Understanding and Labeling
 ### A Stronger Definition of Medium Close-Ups
 Medium close-ups are the standard cinematography shot of the classicly-shot two-character dialogue scene. They are typically a shot of the character from the torso-up, with little-to-no headroom (space between the top of their head and the frame). The character is framed to the left- or right-of-center; usually a character takes one side (e.g. left-) and the other character's shot is mirrored (e.g. right-).
