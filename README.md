@@ -7,7 +7,7 @@ As a preliminary starting point, we'll try and identify the basic building block
 - They're visually easy to identify. They are often shot using the the **Medium Close-Up shot**, a very recognizable cinematography shot. We will build a **CNN image classifier** from scratch to determine if frames/shots are Medium Close-Ups.
 - They are comprised of predictable patterns of shots. In a two-character dialogue, the shots are usually presented as a pattern of **speaker A, speaker B, speaker A, speaker B**. Using **Keras' VGG16 image model and HAC clustering**, we will group individual frames into shots, and look for this A/B/A/B pattern.
 
-Below is an example of a series of frames, grouped into shots, which form the A/B/A/B pattern. Each shot is an example of a Medium-Close-Up.
+Below is an example of a series of frames, grouped into shots, which form the A/B/A/B pattern. Each shot is an example of a Medium Close-Up.
 
 ![abab pattern and mcu example](/images/abab.png "abab pattern and mcu example")
 
