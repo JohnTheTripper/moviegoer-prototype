@@ -1,15 +1,14 @@
-## Project Overview and Scope
-### Moviegoer Project
-The Moviegoer project has the lofty goal of unlocking the enormous wealth of emotional data within cinema, by turning films into structured data. Rather than create a single, all-encompassing model, the Moviegoer will be cobbled together iteratively, with various co-refinforcing modules based in transfer learning. There's been much research in the fields of emotional facial recognition, speech analysis, etc, and there are plenty of pre-trained models freely available. But all of these can't be applied to cinema until we can decode a movie's near-infinite possibilities into structured data.
+# Project Overview and Scope
+## Can a Machine Watch A Movie?
+The Moviegoer project has the lofty goal of unlocking the enormous wealth of emotional data within cinema, by turning films into structured data. Rather than create a single, all-encompassing model, Moviegoer will be cobbled together iteratively, with various co-refinforcing modules based in transfer learning. There's been much research in the fields of emotional facial recognition, speech analysis, etc, and there are plenty of pre-trained models freely available. But none of these can't be applied to cinema until we can decode a movie's near-infinite possibilities into structured data.
 
-### Current Scope: CNN Identification of Medium Close-Ups
-Currently, the scope of this project is limited to identifying specific cinematography frames (akin to screenshots) as **MCUs, or medium close-ups**. (As the scope of the project expands, this Readme, and the Repository layout will change accordingly.) A convolutional neural network will be designed to (binary) classify film frames as MCUs, or non-MCUs.
+## Current Scope: Identifying Two-Character Dialogue Scenes
+As a preliminary starting point, we'll try and identify the basic building block of nearly every film: **the two-character dialogue scene**. These types of scenes are simply two characters sharing a conversation, but they are the primary driver of plot advancement: just two characters speaking, with no distractions. These scenes are also very information-dense. Two qualities make it possible for us to, given a set of input frames, **identify where they begin and end**:
+- They're visually easy to identify. They are often shot using the the **Medium Close-Up shot**, a very recognizable cinematography shot. We will build a **CNN image classifier** from scratch to determine if frames/shots are Medium Close-Ups.
+- They are comprised of predictable patterns of shots. In a two-character dialogue, the shots are usually presented as a pattern of **speaker A, speaker B, speaker A, speaker B**. Using **Keras' VGG16 image model and HAC clustering**, we will group individual frames into shots, and look for this A/B/A/B pattern.
 
-The project's first large goal is the automatic identification of a film's two-character dialogue scenes, and this CNN image classification plays a key part in that identification. The two-character dialogue scene is the basic building block of most every film, allowing for plot advancement; in information theory parlance, this is where the "densest" information lies. These types of scenes are typically filmed using the medium close-up shot. More details on the MCU can be found below, but this is what our CNN is looking for:
 
-![mcu samples](/images/mcu.png "mcu samples")
-
-### Frames, not Videos
+## Frames, not Videos
 One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
 
 ## Project Links
@@ -20,7 +19,7 @@ One final note about frames: this project will strictly be using frames (screens
 The repository contains the following files. The Modeling files, when read in order, provide a start-to-finish view of modeling, from data preparation all the way to model layer visualization.
 
 ### Scene Clustering File
-- scene_clustering.ipynb - illustrates a start-to-finish walkthrough of the five-step algorithm of generating scene boundaries
+- *scene_clustering.ipynb* - illustrates a start-to-finish walkthrough of the five-step algorithm of generating scene boundaries
 
 ### Modeling Files
 1. *mcu_data_management.ipynb* - contains functions for controlling the Test/Train splits, with light EDA/visualizations
@@ -33,10 +32,12 @@ The repository contains the following files. The Modeling files, when read in or
 - *metric_functions.py* - generates accuracy/loss visualizations and various metrics for evaluating each model
 - *extract.py* - generates screenshots from movie files
 
-
+# CNN Image Classification to Identify Medium Close-Ups
 ## Data Understanding and Labeling
 ### A Stronger Definition of Medium Close-Ups
 Medium close-ups are the standard cinematography shot of the classicly-shot two-character dialogue scene. They are typically a shot of the character from the torso-up, with little-to-no headroom (space between the top of their head and the frame). The character is framed to the left- or right-of-center; usually a character takes one side (e.g. left-) and the other character's shot is mirrored (e.g. right-).
+
+![mcu samples](/images/mcu.png "mcu samples")
 
 ### Data Extraction
 Frames (akin to screenshots) were extracted from 40 films: one frame every 8 seconds. This produced 675-900 frames per film, including frames from the beginning vanity logos to the ending credits. Each frame file is actually quite small, ranging from 50-80 kB, with an image size around 860x360. Though most films fit this cinema standard 2.39:1 ratio, some were wider or narrower. Still, no film deviated from this widescreen format enough to warrant resizing image files.
@@ -114,7 +115,7 @@ At the lowest activation layer (and not its pooling counterpart), 256 filters ar
 
 ![last activation layer](/images/lastact.png "last activation layer")
 
-## Future Improvements
+# Future Improvements
 ### MCU Classifier
 The MCU classifier could use improvement, both in terms of more data, and perhaps a more stringent hand-labelling process. False Positives and False Negatives could be scrutinized to see what went wrong. Perhaps if the data were more consistent, (Dropout) Regularization and (Batch) Normalization would have a more positive impact on the model; neither of these were included in the model design because of poor performance.
 
@@ -125,7 +126,7 @@ The clustering performed very well for certain scenes, but failed to identify ot
 The next phase of the Moviegoer project will use the defined scene boundaries to implement transfer learning on individual scenes. This will include NLP analysis of subtitle files, emotional facial analysis, facial character recognition, etc.
 
 
-## Movie Copyright
+# Movie Copyright
 40 films were used to train the CNN model, and additional films may be used for further training and development. Because these films are copyrighted, neither the model nor the dataset will be publicly released. A list of films used in this project is available in the movies_cited.md file.
 
-This project is strictly for educational and research purposes.
+This project is strictly for non-commercial educational and research purposes.
