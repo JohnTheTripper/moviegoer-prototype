@@ -64,6 +64,7 @@ In between the Anchor Start and Anchor End are many other shots known as cutaway
 - POV shots, showing what characters are looking at offscreen
 - Inserts, different shots of Speaker A or B, such as a one-off close-up
 - Other characters, both silent and speaking
+
 After we identify these cutaways, we may be able to expand the scene's start frame backward, and the end frame forward. If we see these cutaways again, but before the Anchor start or after the Anchor end, they must still be part of the scene.
 ![cutaways](/images/cutaways.png "cutaways")
 
