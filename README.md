@@ -15,7 +15,8 @@ Below is an example of a series of frames, grouped into shots, which form the A/
 One final note about frames: this project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
 
 ## Project Links
-[Presentation for CNN Image Classifier](https://docs.google.com/presentation/d/1JytHUAu_NN734GOuSn8xJDm-2z6jJcKcaj_O8DvddRw/edit?usp=sharing)
+- [Presentation for Scene Clustering](https://docs.google.com/presentation/d/1bUYIPmKFG0cvVYVDsd3v0mIRydsCCLgZe7pZsSwOBSI/edit?usp=sharing)
+- [Presentation for CNN Image Classifier](https://docs.google.com/presentation/d/1JytHUAu_NN734GOuSn8xJDm-2z6jJcKcaj_O8DvddRw/edit?usp=sharing)
 
 ## Repository Files
 The repository contains the following files. The Modeling files, when read in order, provide a start-to-finish view of modeling, from data preparation all the way to model layer visualization.
@@ -77,8 +78,8 @@ We apply this same tecnique to the scene's beginning, in the opposite direction.
 ![extending the scene start](/images/extension_start.png "extending the scene start")
 
 ## Evaluation
-Below is a visualization of the total frames in the scene. This algorithm managed to label most frames of the scene. Although some frames were missed at the scene's beginning, these are non-speaking introductory frames. The scene takes some time to get started, and we've indeed captured all frames containing dialogue, the most important criteria.
-![evaluation](/images/boundaries.png "evaluation")
+Below is a visualization of the total frames in the scene, with the blue highlighted frames included in our prediction, and the orange highlighted frames not included in our prediction. This algorithm managed to label most frames of the scene. Although some frames were missed at the scene's beginning, these are non-speaking introductory frames. The scene takes some time to get started, and we've indeed captured all frames containing dialogue, the most important criteria.
+![evaluation](/images/evaluation.png "evaluation")
 
 # Identification of Medium Close-Ups Using CNN Image Classification
 ## Data Understanding and Labeling
