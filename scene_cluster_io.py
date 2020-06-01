@@ -1,22 +1,19 @@
-import os
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
-from keras import models
 import numpy as np
-import pandas as pd
-from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.cluster import AgglomerativeClustering
+
 
 def label_clusters(dialogue_folder, frame_choice, film, threshold):
 
     model = VGG16(weights='imagenet', include_top=False)
-    model.summary()
 
     vgg16_feature_list = []
 
     for x in frame_choice:
-        img_path = dialogue_folder + '/' + film + '_frame'+ str(x) + '.jpg'
+        img_path = dialogue_folder + '/' + film + '_frame' + str(x) + '.jpg'
         img = image.load_img(img_path, target_size=(256, 256))
         img_data = image.img_to_array(img)
         img_data = np.expand_dims(img_data, axis=0)
@@ -31,7 +28,7 @@ def label_clusters(dialogue_folder, frame_choice, film, threshold):
     vgg16_feature_list_np = np.array(vgg16_feature_list)
     vgg16_feature_list_np.shape
 
-    hac = AgglomerativeClustering(n_clusters = None, distance_threshold = threshold).fit(vgg16_feature_list_np)
+    hac = AgglomerativeClustering(n_clusters=None, distance_threshold=threshold).fit(vgg16_feature_list_np)
     hac_labels = hac.labels_
     print('Number of clusters:', hac.n_clusters_)
 
@@ -129,7 +126,7 @@ def mcu_check(alternating_pairs, scene_df):
 
 
 def anchor_scenes(speaker_pairs, scene_df):
-    anchor_scenes = []
+    anchors = []
 
     for pair in speaker_pairs:
         # designate the first and last frames with either Speaker A or Speaker B clusters as Anchors
@@ -140,9 +137,9 @@ def anchor_scenes(speaker_pairs, scene_df):
         print('Speaker A and B Clusters:', pair)
         print('Anchor Start/End Frames:', anchor_start, anchor_end)
         print()
-        anchor_scenes.append((anchor_start, anchor_end))
+        anchors.append((anchor_start, anchor_end))
 
-    return anchor_scenes
+    return anchors
 
 
 def expand_scenes(speaker_pairs, scene_df):
