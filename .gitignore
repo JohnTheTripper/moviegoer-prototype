@@ -5,6 +5,7 @@ site-packages/
 mcu_data/
 movie_frames/
 dialogue_frames/
+input_videos/
 
 # Saved Models
 saved_models/
@@ -124,6 +125,9 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+
+# PyCharm project settings
+.idea
 
 # Rope project settings
 .ropeproject
