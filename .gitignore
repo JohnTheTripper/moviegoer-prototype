@@ -1,11 +1,9 @@
-# Libraries and Packages
-site-packages/
-
-# Frame Folders
+# Data Folders
 mcu_data/
 movie_frames/
 dialogue_frames/
 input_videos/
+subtitles/
 
 # Saved Models
 saved_models/
