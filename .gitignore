@@ -4,6 +4,8 @@ movie_frames/
 dialogue_frames/
 input_videos/
 subtitles/
+audio_processing/
+extracted_audio/
 
 # Saved Models
 saved_models/
