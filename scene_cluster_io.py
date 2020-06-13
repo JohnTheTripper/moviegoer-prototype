@@ -190,3 +190,5 @@ def expand_scenes(speaker_pairs, scene_df):
     return expanded_scenes
 
 
+def convert_timestamp(frame):
+    return (str(int(frame / 60))+':'+str(frame % 60))
