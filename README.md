@@ -174,6 +174,20 @@ The clustering performed very well for certain scenes, but failed to identify ot
 ## Continuation of the Moviegoer Project
 The next phase of Moviegoer will use the defined scene boundaries to implement transfer learning on individual scenes. This will include NLP analysis of subtitle files, emotional facial analysis, facial character recognition, etc.
 
+There are many directions to take this project, and individual ideas will be explored on an exploratory basis. Proof-of-concept Python files/Notebooks may be posted to the repository, knowing that may not completely function without other portions of the project, for example subtitle NLP analysis will not be useful until a reliable way is found to attribute speaking characters to those subtitles. Still, this sort of POC exploration is necessary to decide which parts of the project (scene identification, persistent character identification, dialogue attribution, etc.) should be developed to advance the overall project. These are the ideas currently being explored:
+
+### Definining Scene Boundaries
+To supplement the technique of discovering A/B/A/B patterns through clustering and MCU classification, we can also use pre-built **facial recognition models to identify A/B/A/B patterns of characters**. This will solve the problem of scenes suddenly switching from Medium Close-Ups to Close-Ups mid-scene. The shots (clusters) would change (potentially breaking an A/B/A/B pattern) but the characters would persist and appear in an A/B/A/B pattern.
+
+### Dialogue Attribution
+We can currently identify scenes where two characters are speaking, but we need to be able to attribute spoken dialogue to individual characters. This is a challenge in identifying which character is speaking onscreen. There are a few methods being explored, including **determining if character's mouths are open**, or a cinematography-based approach of **identifying shot patterns** to determine which character is speaking and which is listening.
+
+### Facial Emotion Analysis
+Many **pre-built models are available for analyzing facial expressions** and assigning one of Darwin's six emotional states. As a bonus, some models can also approximate demographic information, such as age, gender, and race.
+
+### Subtitle Analysis
+Subtitles can be extracted and analyzed with various **NLP** techniques. Named Entity Recognition can be used to identify character names. We can also search for emotionally-charged words, or specifically look for phrases and words that accompany a sudden change in emotion.
+
 ![transfer learning](/images/transfer.png "transfer learning")
 
 # Movie Copyright
