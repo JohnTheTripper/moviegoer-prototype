@@ -3,42 +3,38 @@ import os
 
 # create frames from video file
 title = 'extremely_wicked'
-cap = cv2.VideoCapture('input_videos/' + title + '.mkv')   # capturing the video from the given path
+scale_percent = 100     # optional image scaling
 
+cap = cv2.VideoCapture('input_videos/' + title + '.mkv')
 output_directory = os.path.join('dialogue_frames/', title)
 os.mkdir(output_directory)
 
 if not cap.isOpened():
     print("Error opening video stream or file")
 
-frameRate = cap.get(5)  # framerate
-print(frameRate)
+frame_rate = cap.get(5)              # frame rate
+print('Video frame rate:', frame_rate)
+frame_rate_int = round(frame_rate)             # rounds up the frame_rate of 23.976 to 24 for cleaner frame extraction
+print('Extracting image every:', frame_rate_int, 'frames')
 
-count = 0
-x = 1
+count = 1   # starts at 1, because first image isn't saved until 24th frame (timestamp of 1 second)
 while cap.isOpened():
-    frameId = cap.get(1)                # current frame number
     ret, frame = cap.read()
 
     if not ret:
         break
-    if cap.get(1) % 24 == 0:     # frame every 1 second, on a 24fps video
+    if cap.get(1) % frame_rate_int == 0:     # frame every 1 second
         filename = output_directory + '/' + title + '_frame%d.jpg' % count
-        count += 1
 
-        # new, resize
-        # percent by which the image is resized
-        scale_percent = 100
-        # calculate the 33 percent of original dimensions
+        # optional image scaling
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
-        # dsize
-        dsize = (width, height)
-        # resize image
-        frame = cv2.resize(frame, dsize)
+        dimensions = (width, height)
+        frame = cv2.resize(frame, dimensions)
 
         print(cap.get(0), cap.get(1), count)
         cv2.imwrite(filename, frame)
+        count += 1
 
 cap.release()
 print('Extracted', count, 'frames')
