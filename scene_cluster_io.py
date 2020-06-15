@@ -4,6 +4,7 @@ from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
 import numpy as np
 from sklearn.cluster import AgglomerativeClustering
+import pandas as pd
 
 
 def label_clusters(dialogue_folder, frame_choice, film, threshold):
@@ -188,6 +189,36 @@ def expand_scenes(speaker_pairs, scene_df):
         expanded_scenes.append((scene_start, scene_end))
 
     return expanded_scenes
+
+
+def generate_scenes(dialogue_folder, film, frame_choice, threshold, tuned_model):
+
+    hac_labels = label_clusters(dialogue_folder, frame_choice, film, threshold)
+    print()
+    y_pred_values = predict_mcu(dialogue_folder, tuned_model, frame_choice, film)
+    shot_id_list = get_shot_ids(frame_choice, hac_labels)
+    scene_df = pd.DataFrame(zip(frame_choice, hac_labels, shot_id_list, y_pred_values), columns=['frame_file', 'cluster', 'shot_id', 'mcu'])
+    alternating_pairs = get_alternating_pairs(frame_choice, hac_labels, y_pred_values, shot_id_list)
+    speaker_pairs = mcu_check(alternating_pairs, scene_df)
+    anchors = anchor_scenes(speaker_pairs, scene_df)
+    scenes = expand_scenes(speaker_pairs, scene_df)
+
+    return scenes
+
+
+def clean_scene_list(scene_list):
+    # take list of lists and just make a singular list
+    scene_set = []
+
+    for results in scene_list:
+        for scene in results:
+            scene_set.append(scene)
+
+    # remove duplicates while maintaining order
+    seen = set()
+    seen_add = seen.add
+
+    return [x for x in scene_set if not (x in seen or seen_add(x))]
 
 
 def convert_timestamp(frame):
