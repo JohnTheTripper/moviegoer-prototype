@@ -12,8 +12,8 @@ The repository contains the following files. The Attribution files, when read in
 1. *attribution_visual.ipynb* - explores frame data to determine extractable features
 2. *attribution_audio.ipynb* - explores audio data to determine extractable features
 3. *attribution_subtitle.ipynb* - explores subtitle data to determine extractable features
-4. *speaker_identification.ipynb* - uses features from the three streams of data to tie together onscreen speakers and dialogue audio
-5. **subtitle_attribution.ipynb** - ties subtitles to characters, achieving dialogue attribution **(Current Effort)**
+4. *speaker_identification.ipynb* - uses features from the three streams of data to tie together onscreen speakers and dialogue audio **(Current Effort)**
+5. *subtitle_attribution.ipynb* - ties subtitles to characters, achieving dialogue attribution **(Coming Soon)**
 
 ### Support Files
-- **dialogue_attribution_io.py** - functions for extracting features from frames, audio, and subtitles, as well as automation of dialogue attribution **(Current Effort)**
+- *dialogue_attribution_io.py* - functions for extracting features from frames, audio, and subtitles, as well as automation of dialogue attribution **(Coming Soon)**
