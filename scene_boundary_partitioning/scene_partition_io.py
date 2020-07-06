@@ -222,4 +222,4 @@ def clean_scene_list(scene_list):
 
 
 def convert_timestamp(frame):
-    return (str(int(frame / 60))+':'+str(frame % 60))
+    return str(int(frame / 60))+':'+str(frame % 60)

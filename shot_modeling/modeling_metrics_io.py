@@ -43,7 +43,7 @@ def evaluate_test(model, history, class_labels, train_X, test_X, train_y, test_y
     print('Accuracy \n Train: %.3f, Test: %.3f' % (train_acc, test_acc))
     print('Loss \n Train: %.3f, Test: %.3f \n' % (train_loss, test_loss))
     # plot loss during training
-    plt.subplots_adjust(hspace = .5, wspace = 0.5)
+    plt.subplots_adjust(hspace=.5, wspace=0.5)
     plt.subplot(211)
     plt.title('Loss', weight='bold')
     plt.plot(history.history['loss'], label='train')
