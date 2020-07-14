@@ -2,8 +2,12 @@ import math
 import face_recognition
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
+import datetime
+import pysrt
+import pyAudioAnalysis.audioSegmentation
 
 
+# visual functions
 # this function returns three lists, but to avoid running a costly analysis 3x, they're combined into one function
 def frame_attribution_analysis(dialogue_folder, film, frame_choice):
     """
@@ -161,3 +165,92 @@ def mouth_open_check(face_landmarks, open_ratio=.8):
         return 1
     else:
         return 0
+
+
+# subtitle functions
+def load_subtitles(subs_file):
+    subs = pysrt.open(subs_file)
+    subs.insert(0, subs[0])     # dummy at 0, because .srt files are explicitly numbered, and start at 1
+
+    return subs
+
+
+def frame_to_time(frame_number):
+    seconds = frame_number % (24 * 3600)
+    hours = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+
+    timestamp = datetime.time(hours, minutes, seconds)
+
+    return timestamp
+
+
+def analyze_onscreen_subtitles(subs, frame_choice):
+    subtitle_onscreen = []
+    for frame in frame_choice:
+        time = frame_to_time(frame)
+
+        # check for presence of subtitle, then if the subtitle is a parenthetical subtitle, which should be excluded
+        if subs.at(time) and (subs.at(time).text[0] != '(' or subs.at(time).text[-1] != ')'):
+            subtitle_onscreen.append(1)
+        elif subs.at(time.replace(microsecond=999000)) and (subs.at(time.replace(microsecond=999000)).text[0] != '(' or
+                                                            subs.at(time.replace(microsecond=999000)).text[-1] != ')'):
+            subtitle_onscreen.append(1)
+        else:
+            subtitle_onscreen.append(0)
+
+    return subtitle_onscreen
+
+
+# audio functions
+def cluster_voices(audio_file, plot=True):
+    clusters = pyAudioAnalysis.audioSegmentation.speaker_diarization(audio_file, n_speakers=2, mid_window=0.8,
+                                                                     mid_step=0.1, short_window=0.02, lda_dim=0,
+                                                                     plot_res=plot)
+
+    speaker_list = []
+    x = 0
+    while x < len(clusters):
+        if sum(clusters[x:x + 10]) == 5:  # ignore tie
+            speaker_list.append(0)
+        else:
+            speaker_list.append(chr(int(round(np.mean(clusters[x:x + 10]))) + 77))  # convert 0 and 1 to M and N
+        x += 10
+
+    return speaker_list
+
+
+def analyze_audible_sound(audio_file, plot=False):
+    sampling_rate, signal = pyAudioAnalysis.audioBasicIO.read_audio_file(audio_file)
+    segments_with_sound = pyAudioAnalysis.audioSegmentation.silence_removal(signal, sampling_rate, st_win=0.05,
+                                                                            st_step=0.025, smooth_window=0.5,
+                                                                            weight=0.3, plot=plot)
+    audible_sound = []
+
+    for frame in range(0, 58):
+        sound_found = 0
+
+        for segment in segments_with_sound:
+            sound_start = segment[0]
+            sound_end = segment[1]
+            if sound_start <= frame <= sound_end:
+                sound_found = 1
+            if sound_start <= frame + .25 <= sound_end:
+                sound_found = 1
+            if sound_start <= frame + .5 <= sound_end:
+                sound_found = 1
+            if sound_start <= frame + .75 <= sound_end:
+                sound_found = 1
+            if sound_start <= frame + .999 <= sound_end:
+                sound_found = 1
+
+        if sound_found:
+            audible_sound.append(1)
+        else:
+            audible_sound.append(0)
+
+    return audible_sound
+
+
