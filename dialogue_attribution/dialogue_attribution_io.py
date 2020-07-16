@@ -187,6 +187,26 @@ def frame_to_time(frame_number):
     return timestamp
 
 
+def add_time_offset(time_object, offset):
+    datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=time_object.hour, minute=time_object.minute,
+                                        second=time_object.second, microsecond=time_object.microsecond)
+    datetime_offset = datetime.timedelta(milliseconds=offset)
+    datetime_set_off = datetime_object + datetime_offset
+    time_added = datetime.time(hour=datetime_set_off.hour, minute=datetime_set_off.minute,
+                               second=datetime_set_off.second, microsecond=datetime_set_off.microsecond)
+    return time_added
+
+
+def subtract_time_offset(time_object, offset):
+    datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=time_object.hour, minute=time_object.minute,
+                                        second=time_object.second, microsecond=time_object.microsecond)
+    datetime_offset = datetime.timedelta(milliseconds=offset)
+    datetime_set_off = datetime_object - datetime_offset
+    time_subtracted = datetime.time(hour=datetime_set_off.hour, minute=datetime_set_off.minute,
+                                    second=datetime_set_off.second, microsecond=datetime_set_off.microsecond)
+    return time_subtracted
+
+
 def analyze_onscreen_subtitles(subs, frame_choice):
     subtitle_onscreen = []
     for frame in frame_choice:
