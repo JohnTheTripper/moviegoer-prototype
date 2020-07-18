@@ -1,7 +1,7 @@
 # Data Folders
 mcu_data/
 movie_frames/
-dialogue_frames/
+frame_per_second/
 input_videos/
 subtitles/
 audio_processing/
