@@ -9,7 +9,7 @@ import pyAudioAnalysis.audioSegmentation
 
 # visual functions
 # this function returns three lists, but to avoid running a costly analysis 3x, they're combined into one function
-def frame_attribution_analysis(dialogue_folder, film, frame_choice):
+def frame_attribution_analysis(frame_folder, film, frame_choice):
     """
     returns three lists for each frame: primary character (A or B), count of faces found, and a mouth_open flag
     """
@@ -18,7 +18,7 @@ def frame_attribution_analysis(dialogue_folder, film, frame_choice):
     mouth_open_list = []
 
     for x in frame_choice:
-        img_path = dialogue_folder + '/' + film + '_frame' + str(x) + '.jpg'
+        img_path = frame_folder + '/' + film + '_frame' + str(x) + '.jpg'
         image = face_recognition.load_image_file(img_path)
         face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=1)
         face_landmarks_list = face_recognition.face_landmarks(image, face_locations)
@@ -52,14 +52,14 @@ def frame_attribution_analysis(dialogue_folder, film, frame_choice):
     return primary_character_list, faces_found, mouth_open_list
 
 
-def count_faces(dialogue_folder, film, frame_choice):
+def count_faces(frame_folder, film, frame_choice):
     """
     returns a list of counts of faces found in each frame
     """
     faces_found = []
 
     for x in frame_choice:
-        img_path = dialogue_folder + '/' + film + '_frame' + str(x) + '.jpg'
+        img_path = frame_folder + '/' + film + '_frame' + str(x) + '.jpg'
         image = face_recognition.load_image_file(img_path)
         face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=1)
 
@@ -74,7 +74,7 @@ def count_faces(dialogue_folder, film, frame_choice):
     return faces_found
 
 
-def get_primary_character(dialogue_folder, film, frame_choice):
+def get_primary_character(frame_folder, film, frame_choice):
     """
     returns a list of the primary character found in each frame
     """
@@ -82,7 +82,7 @@ def get_primary_character(dialogue_folder, film, frame_choice):
     faces_found = []
 
     for x in frame_choice:
-        img_path = dialogue_folder + '/' + film + '_frame' + str(x) + '.jpg'
+        img_path = frame_folder + '/' + film + '_frame' + str(x) + '.jpg'
         image = face_recognition.load_image_file(img_path)
         face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=1)
 
@@ -112,7 +112,7 @@ def get_primary_character(dialogue_folder, film, frame_choice):
     return primary_character_list
 
 
-def analyze_mouth_open(dialogue_folder, film, frame_choice):
+def analyze_mouth_open(frame_folder, film, frame_choice):
     """
     returns a list of flags, for if a character has their mouth open, in each frame
     returns a 0 if no face detected in frame
@@ -120,7 +120,7 @@ def analyze_mouth_open(dialogue_folder, film, frame_choice):
     mouth_open_list = []
 
     for x in frame_choice:
-        img_path = dialogue_folder + '/' + film + '_frame' + str(x) + '.jpg'
+        img_path = frame_folder + '/' + film + '_frame' + str(x) + '.jpg'
         image = face_recognition.load_image_file(img_path)
         face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=1)
         face_landmarks_list = face_recognition.face_landmarks(image, face_locations)
@@ -224,6 +224,57 @@ def analyze_onscreen_subtitles(subs, frame_choice):
     return subtitle_onscreen
 
 
+def get_cluster_changes(diarization_clusters):
+    prev_cluster = 200
+    index = 0
+    cluster_changes = []
+
+    for cluster in diarization_clusters:
+        if cluster != prev_cluster and index != 0:
+            cluster_changes.append(index)
+        prev_cluster = cluster
+        index += 1
+
+    return cluster_changes
+
+
+def get_subtitle_flip_times(frame, cluster_changes):
+    scene_start_time = frame_to_time(frame)
+    flip_times = []
+    for cluster_change in cluster_changes:
+        scene_start_datetime = datetime.datetime(year=2000, month=1, day=1, hour=scene_start_time.hour,
+                                                 minute=scene_start_time.minute, second=scene_start_time.second)
+        cluster_flip = datetime.timedelta(seconds=cluster_change / 10)
+        flip_datetime = scene_start_datetime + cluster_flip
+        flip_time = datetime.time(hour=flip_datetime.hour, minute=flip_datetime.minute, second=flip_datetime.second,
+                                  microsecond=flip_datetime.microsecond)
+        flip_times.append(flip_time)
+
+    return flip_times
+
+
+def attribute_subs(flip_times, subs):
+    subtitle_flip_indices = []
+    for time in flip_times:
+        subtitle_flip_indices.append(subs.at(time)[0].index)
+
+    character_s_subs = []
+    character_t_subs = []
+    character = 1  # since we're just working with two-character scenes for now, this value flips between 1 and -1
+    sub_index_start = subtitle_flip_indices[0]
+    sub_index_finish = subtitle_flip_indices[-1]  # this discards final subtitles, for now
+
+    for index in range(sub_index_start, sub_index_finish):
+        if index in subtitle_flip_indices:
+            character *= -1
+        if character == 1:
+            character_s_subs.append(index)
+        if character == -1:
+            character_t_subs.append(index)
+
+    return character_s_subs, character_t_subs
+
+
 # audio functions
 def cluster_voices(audio_file, plot=True):
     clusters = pyAudioAnalysis.audioSegmentation.speaker_diarization(audio_file, n_speakers=2, mid_window=0.8,
@@ -272,5 +323,3 @@ def analyze_audible_sound(audio_file, plot=False):
             audible_sound.append(0)
 
     return audible_sound
-
-
