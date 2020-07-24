@@ -16,7 +16,7 @@ Though some films are freeform, open-ended, and experimental, many follow a spec
 As a starting point, the project scope is limited to the two-character dialogue scene, the fundamental building block of nearly every film. From an information theory perspective, two-character dialogue scenes are very dense. No distractions, just two characters speaking and advancing the plot. In the future, advancements made in certain modules will pave the way for widening the scope beyond two-character dialogue scenes. 
 
 # Repository Files
-This project has three main modules, each focused on a specific task in turning films into structured data. **Each module is separated into a different directory, each with its own Readme file**, going into further detail on design decisions.
+This project has four main modules, each focused on a specific task in turning films into structured data. **Each module is separated into a different directory, each with its own Readme file**, going into further detail on design decisions.
 
 ### Shot Recognition – CNN Image Recognition
 There are a handful of very common cinematography (photography) shots used in most movies. This type of recognition can aid in identifying types of scenes, or certain cause-and-effect beats. The first type of shot recognized was the medium close-up, a shot commonly used in two-character dialogue scenes. We’ve trained a CNN (using an original, hand-labeled dataset of 11,000+ frames) to recognize these types of images. 
@@ -24,24 +24,29 @@ There are a handful of very common cinematography (photography) shots used in mo
 ### Scene Boundary Identification – Shot Clustering and Original Algorithm
 Movies can be broken down into individual scenes, self-contained units of dialogue and action. In the current scope, we’re looking to identify two-character dialogue scenes. These scenes have a distinct pattern: we see character A speak, then character B speak, back to A, then B, etc. Using the VGG16 image recognition model and HAC clustering, we’ve grouped frames into shots, and then created an original algorithm to look for these ABAB patterns of shots (assisted by the CNN image classifier above).
 
-### Dialogue Attribution – Voice Clustering, Facial Analysis, and Subtitle Parsing (Current Effort)
+### Dialogue Attribution – Voice Clustering, Facial Analysis, and Subtitle Parsing
 With scene boundaries identified, we can analyze individual scenes. The biggest task is dialogue attribution: determining which character is speaking.  A scene contains three streams of data: visual, audio, and subtitles. We need to be able to tie the onscreen characters in the frames, with the voices in the audio, with the written dialogue in the subtitles. We’ll glean clues from each of the three data streams on how to attribute dialogue.
+
+### Vision Features – Color, Composition, and Other Computer Vision Analyses *(Current Effort)*
+We can use computer vision to extract visual features from frames using computer vision. These features can be populated into the frame-level DataFrame. These features may deal with things like brightness or strong presence of specific colors. We can also use cinematography axioms, like the rule of thirds to define points-of-interest in frames.
 
 ### Other Files
 These additional files are in the repository root:
 - *extract.py* - generates screenshots from movie files
 - *movies_cited.md* - contains a list of movies used in this project
 
-# Current Effort: Dialogue Attribution in Two-Character Dialogue Scenes
-We've identified the start and end points of two-character dialogue scenes, and the next step is to identify which character is speaking, and what they're saying. To do this, we'll be using clues from the three streams of data: visual, audio, and subtitles.
+# Current Progress
+We've identified the start and end points of two-character dialogue scenes. We've also come up with a makeshift way of attributing spoken dialogue and written subtitles to each character.
 
-Previous effort allowed us to identify these types of scenes. Two qualities make it possible for us to, given a set of input frames, **identify where they begin and end**:
+Two qualities make it possible for us to, given a set of input frames, **identify where two-character dialogue scenes begin and end**:
 - They're visually easy to identify. They are often shot using the the **Medium Close-Up shot**, a very recognizable cinematography shot. We've built a **CNN image classifier** from scratch to determine if frames/shots are Medium Close-Ups.
 - They're comprised of predictable patterns of shots. In a two-character dialogue, the shots are usually presented as a pattern of **speaker A, speaker B, speaker A, speaker B**. Using **Keras' VGG16 image model and HAC clustering**, we've created an algorithm to group individual frames into shots, and look for this A/B/A/B pattern.
 
 Below is an example of a series of frames, grouped into shots, which form the A/B/A/B pattern. Each shot is an example of a Medium Close-Up.
 
 ![abab pattern and mcu example](/readme_images/abab.png "abab pattern and mcu example")
+
+With these scenes identified, we cluster face and voice encodings (independently of each other). We tie them together using clues from the visual, audio, and subtitle channels. Once faces and voices are tied together, we can look into the subtitle data and build lists of dialogue for each character.
 
 # Future Modules
 There are many directions to take this project, and individual ideas will be explored on an exploratory basis. Proof-of-concept Python files/Notebooks may be posted to the repository, knowing that may not completely function without other portions of the project, for example subtitle NLP analysis will not be useful until a reliable way is found to attribute speaking characters to those subtitles. Still, this sort of POC exploration is necessary to decide which parts of the project (scene identification, persistent character identification, dialogue attribution, etc.) should be developed to advance the overall project. These are the ideas currently being explored:
