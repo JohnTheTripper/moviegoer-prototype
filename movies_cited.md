@@ -1,4 +1,4 @@
-## Movies Used for Training MCU Classifier
+## Movies Used for Training MCU Classifier, and Other Modules
 - *American Bistro*. Directed by Arthur Diennet, Diennet Productions, 2019.
 - *Animals*. Directed by Sophie Hyde, Closer Productions, 2019.
 - *Ballon*. Directed by Michael Herbig, herbX Film, 2018.
@@ -39,6 +39,8 @@
 - *What Still Remains*. Directed by Josh Mendoza, Strike the Sun Entertainment, 2018.
 - *Yesterday*. Directed by Danny Boyle, Perfect World Pictures, 2019.
 
-## Movies Used for Scene Clustering
-- *Hustle, The*. Directed by Chris Addison, Metro-Goldwyn-Mayer, 2019.
-- *Extremely Wicked, Shockingly Evil and Vile*. Directed by Joe Berlinger, COTA Films, 2019.
+Some of the above movies were also used for other *Moviegoer* modules. The below movies were not used for shot modeling, but were used in other modules.
+
+## Movies Used for Scene Clustering, Dialogue Attribution, Vision Features, etc.
+- *Rides Start at 10:00*. Directed by Tim Lee, not distributed, 2017.
+- *Teen Spirit*. Directed by Max Minghella, Mister Smith Entertainment, 2018.
