@@ -48,17 +48,32 @@ Below is an example of a series of frames, grouped into shots, which form the A/
 
 With these scenes identified, we cluster face and voice encodings (independently of each other). We tie them together using clues from the visual, audio, and subtitle channels. Once faces and voices are tied together, we can look into the subtitle data and build lists of dialogue for each character.
 
-# Future Modules
-There are many directions to take this project, and individual ideas will be explored on an exploratory basis. Proof-of-concept Python files/Notebooks may be posted to the repository, knowing that may not completely function without other portions of the project, for example subtitle NLP analysis will not be useful until a reliable way is found to attribute speaking characters to those subtitles. Still, this sort of POC exploration is necessary to decide which parts of the project (scene identification, persistent character identification, dialogue attribution, etc.) should be developed to advance the overall project. These are the ideas currently being explored:
+# Four Categories of Comprehension
+Continued progress has helped clarify the overall goals of the project — we’ve identified four broad categories of knowledge that Moviegoer must identify and recognize. These categories aren’t tied to any specific aspect of the tech stack, and advances in one category may support another. Much like a human viewer, a machine must be able to parse four categories of comprehension to “watch a movie”: film structure; characters; plot and events; and emotional and style features.
 
-### Definining Scene Boundaries
-To supplement the technique of discovering A/B/A/B patterns through clustering and MCU classification, we can also use pre-built **facial recognition models to identify A/B/A/B patterns of characters**. This will solve the problem of scenes suddenly switching from Medium Close-Ups to Close-Ups mid-scene. The shots (clusters) would change (potentially breaking an A/B/A/B pattern) but the characters would persist and appear in an A/B/A/B pattern.
+### Structure
+An individual scene is a granular, self-contained component of every film. It has a fixed location, a set number of characters, and conveys one or more story beats. A scene can be analyzed individually, or compared against other scenes. Earlier in the project, we created an algorithm to identify a specific type of scene: the two-character dialogue scene. But we’ll need to be able to divide the entire film into its individual scenes.
 
-### Facial Emotion Analysis
-Many **pre-built models are available for analyzing facial expressions** and assigning one of Darwin's six emotional states. As a bonus, some models can also approximate demographic information, such as age, gender, and race.
+We’ll also want to divide the film into its eight sequences. Many films follow the eight-sequence-approach, which can be thought of a more detailed breakdown of the three-act structure. These eight sequences, each lasting roughly 15 minutes in a two-hour film, denote (broadly) when major plot points are supposed to be unfold and when new characters might be introduced. Each of the eight sequences ends in a climax — this could be an important clue when identifying major plot points.
 
-### Subtitle Analysis
-Subtitles can be extracted and analyzed with various **NLP** techniques. Named Entity Recognition can be used to identify character names. We can also search for emotionally-charged words, or specifically look for phrases and words that accompany a sudden change in emotion.
+### Characters
+We’ll need to persistently track characters throughout the entire film, to track their events and emotional changes. We can look for the vectorizations of their face and voice throughout the entire film, locating in which scenes they appear. We’ll also need to attribute dialogue to each character, using NLP on the subtitles to understand what they’re saying.
+
+Films elicit responses through their characters’ emotions, and we’ll also need to monitor their emotions throughout the film. We can track their ups and downs through analysis of their facial expression, voice tone, and word choice, and see what antecedents triggered those emotional changes.
+
+### Plot and Events
+A plot consists of many different events and happenings. We’ll need to use context to understand where a scene is taking place, and what’s happening. Maybe an outdoor scene on a boat can be identified by the sound of waves crashing. Dialogue with a previously-unknown character about appetizers or entrees may hint a character is ordering with the waiter at a restaurant.
+
+This particular category might be the most difficult to populate, and its conclusions might be filled with qualifiers and “best guesses”.
+
+### Emotional and Style Features
+Emotional and style features are somewhat “intangible”, and subject to interpretation. These are directorial choices used to elicit specific emotions in the audience. Music score is the most prominent example — although we understand this music doesn’t actually exist within the scene, it’s been layered on top of it to make the audience feel sad, excited, tense, or a multitude of other emotions.
+
+Color and brightness can easily be quantified with computer vision. Dark scenes might be moody or uneasy. A scene tinted blue is “cool”, and the location or situation could be inhospitable or foreign.
+
+The cinematography, or shot choice, can also be scrutinized. A character’s face may fill the frame to emphasize a facial reaction, or we may see his entire body from afar to emphasize loneliness or emotional distance. A shot might be looking down at a character to make her seem powerless, or looking up at her for the opposite effect.
+
+This category of comprehension is simultaneously the most powerful as well as the most debatable. Recognizing these clues (and coding them into the project) relies heavily on domain knowledge in filmmaking. These empirical rules have evolved from over a century’s worth of advances in filmmaking, and require a strong understanding of the craft. At the same time, some directors will consciously flout these rules as an artistic choice, and Moviegoer must be ready to accept these scenarios. But, if a style rule helps us interpret emotion in 99% of films, across all genres, it’ll greatly help in interpreting films.
 
 ![transfer learning](/readme_images/transfer.png "transfer learning")
 
