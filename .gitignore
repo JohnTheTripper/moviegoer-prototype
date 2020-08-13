@@ -10,6 +10,9 @@ extracted_audio/
 # Saved Models
 saved_models/
 
+# Archive
+code_archive/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
