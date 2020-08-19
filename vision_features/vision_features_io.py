@@ -238,3 +238,15 @@ def face_locations(film, frame_number):
     print('Found ' + str(len(locations)) + ' face(s) in frame ' + str(frame_number))
 
     return locations
+
+
+def primary_character(locations):
+    first_face = locations.pop(0)
+    first_face_size = first_face[2] - first_face[0]
+    primary_char_flag = 1
+    primary_char_threshold = .75  # 75% of the first face
+    for face in locations:
+        if face[2] - face[0] > (first_face_size * primary_char_threshold):
+            primary_char_flag = 0
+
+    return primary_char_flag
