@@ -16,7 +16,7 @@ Though some films are freeform, open-ended, and experimental, many follow a spec
 As a starting point, the project scope is limited to the two-character dialogue scene, the fundamental building block of nearly every film. From an information theory perspective, two-character dialogue scenes are very dense. No distractions, just two characters speaking and advancing the plot. In the future, advancements made in certain modules will pave the way for widening the scope beyond two-character dialogue scenes. 
 
 # Repository Files
-This project has four main modules, each focused on a specific task in turning films into structured data. **Each module is separated into a different directory, each with its own Readme file**, going into further detail on design decisions.
+This project has five main modules, each focused on a specific task in turning films into structured data. **Each module is separated into a different directory, each with its own Readme file**, going into further detail on design decisions.
 
 ### Shot Recognition – CNN Image Recognition
 There are a handful of very common cinematography (photography) shots used in most movies. This type of recognition can aid in identifying types of scenes, or certain cause-and-effect beats. The first type of shot recognized was the medium close-up, a shot commonly used in two-character dialogue scenes. We’ve trained a CNN (using an original, hand-labeled dataset of 11,000+ frames) to recognize these types of images. 
