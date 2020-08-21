@@ -27,8 +27,11 @@ Movies can be broken down into individual scenes, self-contained units of dialog
 ### Dialogue Attribution – Voice Clustering, Facial Analysis, and Subtitle Parsing
 With scene boundaries identified, we can analyze individual scenes. The biggest task is dialogue attribution: determining which character is speaking.  A scene contains three streams of data: visual, audio, and subtitles. We need to be able to tie the onscreen characters in the frames, with the voices in the audio, with the written dialogue in the subtitles. We’ll glean clues from each of the three data streams on how to attribute dialogue.
 
-### Vision Features – Color, Composition, and Other Computer Vision Analyses *(Current Effort)*
+### Vision Features – Color, Composition, and Other Computer Vision Analyses
 We can use computer vision to extract visual features from frames using computer vision. These features can be populated into the frame-level DataFrame. These features may deal with things like brightness or strong presence of specific colors. We can also use cinematography axioms, like the rule of thirds to define points-of-interest in frames.
+
+### Audio Features – Speech tone, Score, and Sound Effects *(Current Effort)*
+We're looking for three categories of features when analyzing a film's audio track: speech tone (*how* words are said), score (music), and specific sound effects. Speech tone will help with measuring emotion, while score can help determine the intended mood of the scene. Sound effects may be able to help with scene location identification — waves crashing implies the scene takes place at, or near the sea. Identifying specific sounds can also help with plot interpretation. Gunshots, car honking, and cash registers all have distinct auditory profiles, and are relatively unambigious in what they mean for the onscreen action.
 
 ### Other Files
 These additional files are in the repository root:
