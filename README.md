@@ -16,7 +16,7 @@ Though some films are freeform, open-ended, and experimental, many follow a spec
 As a starting point, the project scope is limited to the two-character dialogue scene, the fundamental building block of nearly every film. From an information theory perspective, two-character dialogue scenes are very dense. No distractions, just two characters speaking and advancing the plot. In the future, advancements made in certain modules will pave the way for widening the scope beyond two-character dialogue scenes. 
 
 # Repository Files
-This project has four main modules, each focused on a specific task in turning films into structured data. **Each module is separated into a different directory, each with its own Readme file**, going into further detail on design decisions.
+This project has five main modules, each focused on a specific task in turning films into structured data. **Each module is separated into a different directory, each with its own Readme file**, going into further detail on design decisions.
 
 ### Shot Recognition – CNN Image Recognition
 There are a handful of very common cinematography (photography) shots used in most movies. This type of recognition can aid in identifying types of scenes, or certain cause-and-effect beats. The first type of shot recognized was the medium close-up, a shot commonly used in two-character dialogue scenes. We’ve trained a CNN (using an original, hand-labeled dataset of 11,000+ frames) to recognize these types of images. 
@@ -27,8 +27,11 @@ Movies can be broken down into individual scenes, self-contained units of dialog
 ### Dialogue Attribution – Voice Clustering, Facial Analysis, and Subtitle Parsing
 With scene boundaries identified, we can analyze individual scenes. The biggest task is dialogue attribution: determining which character is speaking.  A scene contains three streams of data: visual, audio, and subtitles. We need to be able to tie the onscreen characters in the frames, with the voices in the audio, with the written dialogue in the subtitles. We’ll glean clues from each of the three data streams on how to attribute dialogue.
 
-### Vision Features – Color, Composition, and Other Computer Vision Analyses *(Current Effort)*
+### Vision Features – Color, Composition, and Other Computer Vision Analyses
 We can use computer vision to extract visual features from frames using computer vision. These features can be populated into the frame-level DataFrame. These features may deal with things like brightness or strong presence of specific colors. We can also use cinematography axioms, like the rule of thirds to define points-of-interest in frames.
+
+### Audio Features – Speech tone, Score, and Sound Effects *(Current Effort)*
+We're looking for three categories of features when analyzing a film's audio track: speech tone (*how* words are said), score (music), and specific sound effects. Speech tone will help with measuring emotion, while score can help determine the intended mood of the scene. Sound effects may be able to help with scene location identification — waves crashing implies the scene takes place at, or near the sea. Identifying specific sounds can also help with plot interpretation. Gunshots, car honking, and cash registers all have distinct auditory profiles, and are relatively unambigious in what they mean for the onscreen action.
 
 ### Other Files
 These additional files are in the repository root:
