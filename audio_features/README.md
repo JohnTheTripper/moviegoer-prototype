@@ -53,3 +53,10 @@ We’ll also want to differentiate between diegetic and non-diegetic music. Non-
 We may be able to tell the difference by looking at the song’s frequencies, specifically the spectrograms and frequency roll-offs.
 
 We can also compare the frequency roll-offs, or the frequencies that contain a certain percentage of overall intensity. Typically when shaping audio to make it sound like it’s coming out of speakers onscreen, the high and low frequencies are reduced or rejected entirely with band-reject filters. Although further research is required to tell the difference, we can use these principles as a start.
+
+## Sound Effects
+Audio engineers and sound mixers spend a great time adding sound effects to film. The general maxim is that “if it moves, it needs a sound”. Though this often leads to some improbable sounds (a passing bike always dings its bell), or objects that are normally silent suddenly being loud (a gun being moved suddenly makes all sorts of clicking sounds), the audience would definitely notice if these sounds weren’t in the mix.
+
+Many of these sound effects can give valuable clues on the location and context of a scene. Sounds of nature (like running water or various animals) may indicate a scene takes place outdoors. The sounds of crickets usually accompany establishing shots of nighttime scenes. Church bells, school bells, and fire alarm bells are all related, but indicate three separate locations.
+
+With sounds vectorized, we can compare them to known, labeled movie sound effects. This would require some manual “hard-coding” of a lookup dictionary with many different sounds. But often, audio engineers will reuse sounds or draw from pre-made sound libraries, rather than create their own from scratch. There are only so many common stock sound effects to process and label, with each of those contributing valuable clues to a scene’s context. Because of the substantial effort of cataloging these sound effects, *Moviegoer* development (for now) will continue without this implementation, and it will be reserved for future effort.
