@@ -30,8 +30,11 @@ With scene boundaries identified, we can analyze individual scenes. The biggest 
 ### Vision Features – Color, Composition, and Other Computer Vision Analyses
 We can use computer vision to extract visual features from frames using computer vision. These features can be populated into the frame-level DataFrame. These features may deal with things like brightness or strong presence of specific colors. We can also use cinematography axioms, like the rule of thirds to define points-of-interest in frames.
 
-### Audio Features – Speech tone, Score, and Sound Effects *(Current Effort)*
+### Audio Features – Speech tone, Score, and Sound Effects
 We're looking for three categories of features when analyzing a film's audio track: speech tone (*how* words are said), score (music), and specific sound effects. Speech tone will help with measuring emotion, while score can help determine the intended mood of the scene. Sound effects may be able to help with scene location identification — waves crashing implies the scene takes place at, or near the sea. Identifying specific sounds can also help with plot interpretation. Gunshots, car honking, and cash registers all have distinct auditory profiles, and are relatively unambigious in what they mean for the onscreen action.
+
+### Subtitle Features – Speech tone, Score, and Sound Effects *(Current Effort)*
+Subtitles contain the ground-truth dialogue - no audio-based transcription required. Using NLP, we can analyze the word choice and get a feel for sentiment and emotion. NER (named-entity recognition) can offer various clues like character names, and any locations mentioned by characters. Subtitles also contain lots of non-dialogue information, like the presence of sound effects or laughter.
 
 ### Other Files
 These additional files are in the repository root:
