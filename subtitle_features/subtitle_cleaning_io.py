@@ -64,3 +64,44 @@ def laugh_clean(line):
             laugh_found = 1
             line = line.replace(laugh, '')
     return laugh_found, line
+
+
+def clean_and_flag(subs):
+    italic_flags = []
+    music_flags = []
+    laugh_flags = []
+    speakers = []
+    parenthetical_flags = []
+
+    cleaned_lines = []
+
+    single_lines = generate_single_lines(subs)
+    for line in single_lines:
+        entire_line_italic, line = italic_clean(line)
+        italic_flags.append(entire_line_italic)
+
+        entire_line_music, line = music_clean(line)
+        music_flags.append(entire_line_music)
+
+        laugh_found, line = laugh_clean(line)
+        laugh_flags.append(laugh_found)
+
+        speaker, line = speaker_clean(line)
+        speakers.append(speaker)
+
+        entire_line_parenthetical, line = parenthetical_clean(line)
+        parenthetical_flags.append(entire_line_parenthetical)
+
+        cleaned_lines.append(line)
+
+    return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, parenthetical_flags
+
+
+def remove_blanks(cleaned_lines):
+    blanks_removed = []
+
+    for line in cleaned_lines:
+        if line:
+            blanks_removed.append(line)
+
+    return blanks_removed
