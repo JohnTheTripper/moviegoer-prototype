@@ -66,7 +66,28 @@ def laugh_clean(line):
     return laugh_found, line
 
 
-def clean_and_flag(subs):
+def clean_subs(subs):
+
+    cleaned_lines = []
+
+    single_lines = generate_single_lines(subs)
+    for line in single_lines:
+        entire_line_italic, line = italic_clean(line)
+
+        entire_line_music, line = music_clean(line)
+
+        laugh_found, line = laugh_clean(line)
+
+        speaker, line = speaker_clean(line)
+
+        entire_line_parenthetical, line = parenthetical_clean(line)
+
+        cleaned_lines.append(line)
+
+    return cleaned_lines
+
+
+def clean_and_flag_subs(subs):
     italic_flags = []
     music_flags = []
     laugh_flags = []
