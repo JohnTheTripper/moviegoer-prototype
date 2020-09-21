@@ -33,7 +33,8 @@ def music_clean(line):
 def parenthetical_clean(line):
     entire_line_parenthetical = 0
     if line[:1] == '(' and line[-1:] == ')':
-        entire_line_parenthetical = 1
+        # entire_line_parenthetical = line[1:-1]
+        entire_line_parenthetical = line
         line = ''
     return entire_line_parenthetical, line
 
@@ -50,7 +51,7 @@ def italic_clean(line):
 def speaker_clean(line):
     colon_find = line.find(':')
     speaker = 'none'
-    if line[0:colon_find].isupper():
+    if colon_find != -1 and line[0:colon_find].isupper():
         speaker = line[0:colon_find]
         line = line[colon_find + 2:]
     return speaker, line
@@ -92,7 +93,7 @@ def clean_and_flag_subs(subs):
     music_flags = []
     laugh_flags = []
     speakers = []
-    parenthetical_flags = []
+    entire_line_parentheticals = []
 
     cleaned_lines = []
 
@@ -111,11 +112,11 @@ def clean_and_flag_subs(subs):
         speakers.append(speaker)
 
         entire_line_parenthetical, line = parenthetical_clean(line)
-        parenthetical_flags.append(entire_line_parenthetical)
+        entire_line_parentheticals.append(entire_line_parenthetical)
 
         cleaned_lines.append(line)
 
-    return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, parenthetical_flags
+    return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, entire_line_parentheticals
 
 
 def remove_blanks(cleaned_lines):
