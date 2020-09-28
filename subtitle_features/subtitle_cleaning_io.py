@@ -25,7 +25,7 @@ def generate_single_lines(subs):
     return single_lines
 
 
-def music_clean(line):
+def music_clean(line):                      # convert to clean only, and function that detects any music note
     entire_line_music = 0
     if line[:1] == '♪' and line[-1:] == '♪':
         entire_line_music = 1
@@ -33,7 +33,21 @@ def music_clean(line):
     return entire_line_music, line
 
 
-def parenthetical_clean(line):
+def find_music(line):
+    if '♪' in line:
+        return 1
+    else:
+        return 0
+
+
+def clean_music(line):
+    if '♪' in line:
+        return ''
+    else:
+        return line
+
+
+def parenthetical_clean(line):             # replicated below in content and clean functionality, will be depreciated
     entire_line_parenthetical = 0
     if line[:1] == '(' and line[-1:] == ')':
         # entire_line_parenthetical = line[1:-1]
@@ -42,13 +56,63 @@ def parenthetical_clean(line):
     return entire_line_parenthetical, line
 
 
-def italic_clean(line):
+def find_parenthetical(line):
+    parenthetical_content = None
+
+    paren_open_find = line.find('(')
+    if paren_open_find != -1:
+        paren_close_find = line.find(')')
+        parenthetical_content = line[paren_open_find + 1:paren_close_find].strip()
+
+    paren_open_find = line.find('[')
+    if paren_open_find != -1:
+        paren_close_find = line.find(']')
+        parenthetical_content = line[paren_open_find + 1:paren_close_find].strip()
+
+    return parenthetical_content
+
+
+def find_el_parenthetical(line):
+    entire_line_parenthetical = 0
+    if line[:1] == '(' and line[-1:] == ')':
+        entire_line_parenthetical = 1
+    elif line[:1] == '[' and line[-1:] == ']':
+        entire_line_parenthetical = 1
+    return entire_line_parenthetical
+
+
+def clean_parenthetical(line):
+    paren_open_find = line.find('(')
+    if paren_open_find != -1:
+        paren_close_find = line.find(')')
+        line = (line[:paren_open_find] + line[paren_close_find + 1:]).strip()
+    paren_open_find = line.find('[')
+    if paren_open_find != -1:
+        paren_close_find = line.find(']')
+        line = (line[:paren_open_find] + line[paren_close_find + 1:]).strip()
+
+    return line
+
+
+def italic_clean(line):                         # same as parentheses function conversion
     entire_line_italic = 0
     if line[:3] == '<i>' and line[-4:] == '</i>':
         entire_line_italic = 1
     line = line.replace('<i>', '')
     line = line.replace('</i>', '')
     return entire_line_italic, line
+
+
+def find_el_italic(line):
+    entire_line_italic = None
+    if line[:3] == '<i>' and line[-4:] == '</i>':
+        entire_line_italic = line[3:-4]
+    return entire_line_italic
+
+
+def clean_italic(line):
+    line = line.replace('<i>', '').replace('</i>', '')
+    return line
 
 
 def speaker_clean(line):                    # replicated below without clean, will be depreciated
@@ -62,12 +126,18 @@ def speaker_clean(line):                    # replicated below without clean, wi
 
 def find_speaker(line):
     colon_find = line.find(':')
-    # speaker = 'none'              # let it return NULL
     if colon_find != -1 and line[0:colon_find].isupper():
         speaker = line[0:colon_find]
     else:
         speaker = None
     return speaker
+
+
+def clean_speaker(line):
+    colon_find = line.find(':')
+    if colon_find != -1 and line[0:colon_find].isupper():
+        line = line[colon_find + 2:]
+    return line
 
 
 def laugh_clean(line):                       # replicated below without clean, will be depreciated
@@ -110,7 +180,7 @@ def clean_subs(subs):                   # replicated below, may be depreciated
     return cleaned_lines
 
 
-def clean_and_flag_subs(subs):
+def clean_and_flag_subs(subs):                      # depreciate
     italic_flags = []
     music_flags = []
     laugh_flags = []
@@ -141,18 +211,11 @@ def clean_and_flag_subs(subs):
     return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, entire_line_parentheticals
 
 
-def clean_line(line):                   # replicated below, may be depreciated
-
-    entire_line_italic, line = italic_clean(line)
-
-    entire_line_music, line = music_clean(line)
-
-    laugh_found, line = laugh_clean(line)
-
-    speaker, line = speaker_clean(line)
-
-    entire_line_parenthetical, line = parenthetical_clean(line)
-
+def clean_line(line):
+    line = clean_parenthetical(line)
+    line = clean_italic(line)
+    line = clean_music(line)
+    line = clean_speaker(line)
     line = midsentence_interjection(line)
 
     return line
@@ -178,7 +241,7 @@ def partition_sentences(input_lines, nlp):
 
 
 def midsentence_interjection(line):
-    interjection_strings = [', uh,', ', um']
+    interjection_strings = [', uh,', ', um', ', you know,']
     for interjection in interjection_strings:
         found_interjection = line.find(interjection)
         if found_interjection != -1:
