@@ -103,11 +103,18 @@ def italic_clean(line):                         # same as parentheses function c
     return entire_line_italic, line
 
 
-def find_el_italic(line):
+def find_italic(line):                  # refactor to account for entire line, or multiple sets of italics
     entire_line_italic = None
     if line[:3] == '<i>' and line[-4:] == '</i>':
         entire_line_italic = line[3:-4]
     return entire_line_italic
+
+
+def find_el_italic(line):
+    if line[:3] == '<i>' and line[-4:] == '</i>':
+        return 1
+    else:
+        return 0
 
 
 def clean_italic(line):
@@ -216,7 +223,7 @@ def clean_line(line):
     line = clean_italic(line)
     line = clean_music(line)
     line = clean_speaker(line)
-    line = midsentence_interjection(line)
+    line = clean_midsentence_interjection(line)
 
     return line
 
@@ -240,10 +247,20 @@ def partition_sentences(input_lines, nlp):
     return sentences
 
 
-def midsentence_interjection(line):
+def clean_midsentence_interjection(line):
     interjection_strings = [', uh,', ', um', ', you know,']
     for interjection in interjection_strings:
         found_interjection = line.find(interjection)
         if found_interjection != -1:
             line = line[:found_interjection] + line[(len(line) - found_interjection - len(interjection)) * -1:]
     return line
+
+
+def find_midsentence_interjection(line):
+    interjection_strings = [', uh,', ', um', ', you know,']
+    for interjection in interjection_strings:
+        found_interjection = line.find(interjection)
+        if found_interjection != -1:
+            return 1
+
+    return 0
