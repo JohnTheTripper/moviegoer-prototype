@@ -179,3 +179,17 @@ def direct_address(sentence, nlp):
         return characters
     else:
         return None
+
+
+# conversation boundaries
+def conversation_boundary(sentence):
+    conversation_starters = ['how are you?', 'hi.', 'hi!', 'what can I do for you?']
+    conversation_enders = ['goodbye.', 'goodbye,', 'bye,', 'bye.', 'see you.', 'see you,', 'see you later', 'see ya']
+    for starter in conversation_starters:
+        if starter in sentence.lower():
+            return 'starter'
+    for ender in conversation_enders:
+        if ender in sentence.lower():
+            return 'ender'
+
+    return None
