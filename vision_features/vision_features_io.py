@@ -238,6 +238,14 @@ def bgr(unrowed):
 def dominant_color(frame):
     if frame.mean() < 50:
         return None
+
+    # resize for faster processing
+    scale_percent = 30  # percent of original size
+    width = int(frame.shape[1] * scale_percent / 100)
+    height = int(frame.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    frame = cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)
+
     mid_pixels = remove_highlights_shadows(frame)
     mid_pixels_mean = mid_pixels.mean()
     b, g, r = bgr(mid_pixels)

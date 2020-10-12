@@ -4,6 +4,7 @@ from vision_features_io import *
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 
+
 def generate_vision_df(movie_choice, frame_choice):
     frame_numbers = []
     blanks = []
@@ -24,7 +25,6 @@ def generate_vision_df(movie_choice, frame_choice):
     vision_df = pd.DataFrame(list(
         zip(frame_numbers, blanks, true_aspect_ratios, brightnesses, contrasts, dominant_colors)),
         columns=['frame', 'blank', 'aspect_ratio', 'brightness', 'contrast', 'dominant_color'])
-    vision_df = vision_df.set_index('frame')
 
     return vision_df
 
@@ -82,7 +82,7 @@ def generate_face_df(movie_choice, frame_choice):
 def cluster_primary_faces(primary_encodings, primary_character_flags):
     primary_encodings_np = np.array(primary_encodings)
 
-    hac = AgglomerativeClustering(n_clusters=None, distance_threshold=1).fit(primary_encodings_np)
+    hac = AgglomerativeClustering(n_clusters=None, distance_threshold=5).fit(primary_encodings_np)
     hac_labels = hac.labels_
 
     primary_face_clusters = []
