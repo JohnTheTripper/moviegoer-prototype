@@ -300,7 +300,7 @@ def analyze_audible_sound(audio_file, plot=False):
                                                                             weight=0.3, plot=plot)
     audible_sound = []
 
-    for frame in range(0, 58):
+    for frame in range(0, int(len(signal) / sampling_rate)):    # each second of audio duration
         sound_found = 0
 
         for segment in segments_with_sound:
