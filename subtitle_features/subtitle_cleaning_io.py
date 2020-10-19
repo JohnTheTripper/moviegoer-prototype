@@ -159,9 +159,9 @@ def laugh_clean(line):                       # replicated below without clean, w
 
 def find_laugh(line):
     laugh_found = 0
-    laugh_strings = ['(laughing)', '(laughs)', '(laughter)', '(chuckles)', '(chuckling)']
+    laugh_strings = ['laughing', 'laughs', 'laughter', 'chuckles', 'chuckling', 'giggles', 'giggling']
     for laugh in laugh_strings:
-        if laugh in line:
+        if laugh in line.lower():
             laugh_found = 1
     return laugh_found
 
