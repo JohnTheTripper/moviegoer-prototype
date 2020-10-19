@@ -79,12 +79,12 @@ def self_intro(sentence, nlp):
             start_token += 1
     except IndexError:
         if characters:
-            return characters
+            return characters[0]
         else:
             return None
 
     if characters:
-        return characters
+        return characters[0]
     else:
         return None
 
@@ -122,12 +122,12 @@ def other_intro(sentence, nlp):
             start_token += 1
     except IndexError:
         if characters:
-            return characters
+            return characters[0]
         else:
             return None
 
     if characters:
-        return characters
+        return characters[0]
     else:
         return None
 
@@ -171,12 +171,12 @@ def direct_address(sentence, nlp):
             start_token += 1
     except IndexError:
         if characters:
-            return characters
+            return characters[-1]
         else:
             return None
 
     if characters:
-        return characters
+        return characters[-1]
     else:
         return None
 
