@@ -30,29 +30,19 @@ With scene boundaries identified, we can analyze individual scenes. The biggest 
 ### Vision Features – Color, Composition, and Other Computer Vision Analyses
 We can use computer vision to extract visual features from frames using computer vision. These features can be populated into the frame-level DataFrame. These features may deal with things like brightness or strong presence of specific colors. We can also use cinematography axioms, like the rule of thirds to define points-of-interest in frames.
 
-### Audio Features – Speech tone, Score, and Sound Effects
+### Audio Features – Speech Tone, Score, and Sound Effects
 We're looking for three categories of features when analyzing a film's audio track: speech tone (*how* words are said), score (music), and specific sound effects. Speech tone will help with measuring emotion, while score can help determine the intended mood of the scene. Sound effects may be able to help with scene location identification — waves crashing implies the scene takes place at, or near the sea. Identifying specific sounds can also help with plot interpretation. Gunshots, car honking, and cash registers all have distinct auditory profiles, and are relatively unambigious in what they mean for the onscreen action.
 
-### Subtitle Features – Speech tone, Score, and Sound Effects *(Current Effort)*
+### Subtitle Features – Audio Transcriptions and Descriptions
 Subtitles contain the ground-truth dialogue - no audio-based transcription required. Using NLP, we can analyze the word choice and get a feel for sentiment and emotion. NER (named-entity recognition) can offer various clues like character names, and any locations mentioned by characters. Subtitles also contain lots of non-dialogue information, like the presence of sound effects or laughter.
+
+### Unifying Features – Tying It All Together *(Current Effort)*
+After taking a deep dive into the individual data streams of visuals, audio, and subtitle, we can use individual features from each to accomplish larger goals of the project. Using them in tandem will require unifying them on the same time reference, as well as some basic input/output to pass data to one another. Taken together, this will lay the groundwork for the first *Moviegoer* prototype!
 
 ### Other Files
 These additional files are in the repository root:
 - *extract.py* - generates screenshots from movie files
 - *movies_cited.md* - contains a list of movies used in this project
-
-# Current Progress
-We've identified the start and end points of two-character dialogue scenes. We've also come up with a makeshift way of attributing spoken dialogue and written subtitles to each character.
-
-Two qualities make it possible for us to, given a set of input frames, **identify where two-character dialogue scenes begin and end**:
-- They're visually easy to identify. They are often shot using the the **Medium Close-Up shot**, a very recognizable cinematography shot. We've built a **CNN image classifier** from scratch to determine if frames/shots are Medium Close-Ups.
-- They're comprised of predictable patterns of shots. In a two-character dialogue, the shots are usually presented as a pattern of **speaker A, speaker B, speaker A, speaker B**. Using **Keras' VGG16 image model and HAC clustering**, we've created an algorithm to group individual frames into shots, and look for this A/B/A/B pattern.
-
-Below is an example of a series of frames, grouped into shots, which form the A/B/A/B pattern. Each shot is an example of a Medium Close-Up.
-
-![abab pattern and mcu example](/readme_images/abab.png "abab pattern and mcu example")
-
-With these scenes identified, we cluster face and voice encodings (independently of each other). We tie them together using clues from the visual, audio, and subtitle channels. Once faces and voices are tied together, we can look into the subtitle data and build lists of dialogue for each character.
 
 # Four Categories of Comprehension
 Continued progress has helped clarify the overall goals of the project — we’ve identified four broad categories of knowledge that Moviegoer must identify and recognize. These categories aren’t tied to any specific aspect of the tech stack, and advances in one category may support another. Much like a human viewer, a machine must be able to parse four categories of comprehension to “watch a movie”: film structure; characters; plot and events; and emotional and style features.
@@ -61,6 +51,8 @@ Continued progress has helped clarify the overall goals of the project — we’
 An individual scene is a granular, self-contained component of every film. It has a fixed location, a set number of characters, and conveys one or more story beats. A scene can be analyzed individually, or compared against other scenes. Earlier in the project, we created an algorithm to identify a specific type of scene: the two-character dialogue scene. But we’ll need to be able to divide the entire film into its individual scenes.
 
 We’ll also want to divide the film into its eight sequences. Many films follow the eight-sequence-approach, which can be thought of a more detailed breakdown of the three-act structure. These eight sequences, each lasting roughly 15 minutes in a two-hour film, denote (broadly) when major plot points are supposed to be unfold and when new characters might be introduced. Each of the eight sequences ends in a climax — this could be an important clue when identifying major plot points.
+
+![abab pattern and mcu example](/readme_images/abab.png "abab pattern and mcu example")
 
 ### Characters
 We’ll need to persistently track characters throughout the entire film, to track their events and emotional changes. We can look for the vectorizations of their face and voice throughout the entire film, locating in which scenes they appear. We’ll also need to attribute dialogue to each character, using NLP on the subtitles to understand what they’re saying.
