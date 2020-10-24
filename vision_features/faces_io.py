@@ -10,7 +10,6 @@ def primary_character_flag(locations):
         local_locations = locations.copy()
         first_face = local_locations.pop(0)
         first_face_size = first_face[2] - first_face[0]
-        primary_char_flag = 1
         primary_char_threshold = .75  # 75% of the first face
         for face in local_locations:
             if face[2] - face[0] > (first_face_size * primary_char_threshold):
@@ -30,11 +29,34 @@ def third_points_alignment(character, frame):
         return None
 
 
+def horizontal_center_alignment(character, frame):
+    vertical_center = center_point(frame)[0]
+
+    if character[1] > vertical_center and character[3] > vertical_center:
+        return 'right'
+    elif character[1] < vertical_center and character[3] < vertical_center:
+        return 'left'
+    else:
+        return None
+
+
+def horizontal_distance_from_center(character, frame):
+    vertical_center = center_point(frame)[0]
+
+    if character[1] > vertical_center and character[3] > vertical_center:
+        return character[1] - vertical_center
+    elif character[1] < vertical_center and character[3] < vertical_center:
+        return vertical_center - character[3]
+    else:
+        return None
+
+
 def get_face_size(locations, frame):
     face_size = pow((locations[1] - locations[3]), 2)
     image_size = frame.shape[0] * frame.shape[1]
+    face_size *= 100
 
-    return round(face_size / image_size, 4)
+    return round(face_size / image_size, 2)
 
 
 def analyze_mouth_open(frame_folder, film, frame_choice):
