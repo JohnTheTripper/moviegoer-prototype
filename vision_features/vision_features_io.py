@@ -9,7 +9,7 @@ import face_recognition
 
 def load_frame(film, frame_number):
     frame_folder = os.path.join('../frame_per_second', film)
-    img_path = frame_folder + '/' + film + '_frame' + str(frame_number) + '.jpg'
+    img_path = frame_folder + '/' + film + '_frame_' + str(frame_number) + '.jpg'
     frame = cv2.imread(img_path)
 
     return frame
@@ -153,12 +153,12 @@ def true_aspect_ratio(frame):
 
 def mean_brightness(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    return round(gray.mean(), 2)
+    return round(gray.mean())
 
 
 def calculate_contrast(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    return round(gray.std(), 2)
+    return round(gray.std())
 
 
 def max_brightness(frame):
@@ -278,6 +278,3 @@ def onscreen_text(frame):
         return True
     else:
         return False
-
-
-

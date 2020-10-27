@@ -1,6 +1,8 @@
 from vision_features_io import *
 import face_recognition
+from deepface import DeepFace
 import math
+import os
 
 
 def primary_character_flag(locations):
@@ -112,3 +114,11 @@ def mouth_open_check(face_landmarks, open_ratio=.8):
         return 1
     else:
         return 0
+
+
+def get_primary_char_emotion(film, frame_number):
+    frame_folder = os.path.join('../frame_per_second', film)
+    img_path = frame_folder + '/' + film + '_frame_' + str(frame_number) + '.jpg'
+
+    obj = DeepFace.analyze(img_path, actions=['emotion'], enforce_detection=False)
+    return obj["dominant_emotion"]
