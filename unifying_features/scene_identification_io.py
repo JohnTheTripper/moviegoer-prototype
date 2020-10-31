@@ -200,7 +200,7 @@ def generate_scenes(vision_df, face_df):
         expanded_scene_frame_pairs.append(expand_scene(alternating_frame_pair, vision_df))
 
     x = 1
-    scene_dictionaries = []
+    scene_dictionary_list = []
     for expanded_frame_pair in expanded_scene_frame_pairs:
         first_frame = expanded_frame_pair[0]
         last_frame = expanded_frame_pair[1]
@@ -227,7 +227,13 @@ def generate_scenes(vision_df, face_df):
                           'right_anchor_face_cluster': right_anchor_face_cluster,
                           'matching_right_face_clusters': matching_right_face_clusters,
                           'cutaway_shot_clusters': cutaway_shot_clusters}
-            scene_dictionaries.append(scene_dict)
+            scene_dictionary_list.append(scene_dict)
+            x += 1
+
+        scene_dictionaries = {}
+        x = 1
+        for scene_dict in scene_dictionary_list:
+            scene_dictionaries[x] = scene_dict
             x += 1
 
     return scene_dictionaries
