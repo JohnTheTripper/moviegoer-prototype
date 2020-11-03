@@ -116,3 +116,31 @@ def display_scene_emotions(scene_dict, face_df):
     right_emotion_percentage = scene_face_df[scene_face_df.p_face_cluster.isin(right_face_clusters)].emotion.value_counts(normalize=True).values[0]
     print('Right character, with face clusters', right_face_clusters, 'has the primary emotion:', right_emotion_index,
           'in', round(right_emotion_percentage, 2), 'percent of frames')
+
+
+def generate_scene_participants(scene_dict, subtitle_df, sentence_df):
+    scene_start_time = frame_to_time(scene_dict['first_frame'])
+    scene_end_time = frame_to_time(scene_dict['last_frame'] + 1) # add 1 second; scene ends one second after this frame is onscreen
+    scene_subtitle_df = subtitle_df[
+        (subtitle_df['end_time'] > scene_start_time) & (subtitle_df['start_time'] < scene_end_time)].copy()
+
+    scene_sentence_indices = []
+    x = 0
+    for sub_index_list in sentence_df.subtitle_indices.values:
+        for sub_index in sub_index_list:
+            if sub_index in scene_subtitle_df.index.values:
+                scene_sentence_indices.append(x)
+        x += 1
+    scene_sentence_df = sentence_df[scene_sentence_indices[0]: scene_sentence_indices[-1] + 1]
+
+    scene_participants = []
+    for name in scene_sentence_df.direct_address.value_counts().index:
+        if name[0].isupper():
+            scene_participants.append(name.lower())
+
+    for name in scene_subtitle_df.speaker.value_counts().index:
+        scene_participants.append(name.lower())
+
+    scene_participants = list(set(scene_participants))
+
+    return scene_participants
