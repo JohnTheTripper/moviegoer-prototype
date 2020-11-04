@@ -1,6 +1,7 @@
 import face_recognition
 import numpy as np
 import pandas as pd
+from time_reference_io import *
 
 
 def find_alternating_clusters(vision_df):
@@ -237,3 +238,19 @@ def generate_scenes(vision_df, face_df):
             x += 1
 
     return scene_dictionaries
+
+
+def get_implied_speaker(sentence_index, sentence_df, subtitle_df, face_df):
+    sub_indices = sentence_df.iloc[sentence_index].subtitle_indices
+    start_frame = time_to_frame(subtitle_df.iloc[sub_indices[0]].start_time)
+    end_frame = time_to_frame(subtitle_df.iloc[sub_indices[-1]].end_time)
+    open_mouth_df = face_df[face_df['p_open_mouth'] == 1].loc[start_frame:end_frame]
+    if len(open_mouth_df) == 0:
+        return None
+    elif len(open_mouth_df.p_face_cluster.value_counts()) == 1:
+        return open_mouth_df.p_face_cluster.value_counts().index[0]
+    elif len(open_mouth_df.p_face_cluster.value_counts()) >= 2: # must check for tie between first two faces
+        if open_mouth_df.p_face_cluster.value_counts().values[0] == open_mouth_df.p_face_cluster.value_counts().values[1]:
+            return None
+        else:
+            return open_mouth_df.p_face_cluster.value_counts().index[0]
