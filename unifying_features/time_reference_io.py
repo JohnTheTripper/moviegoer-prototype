@@ -48,3 +48,15 @@ def subtract_time_offset(time_object, offset):
     time_subtracted = datetime.time(hour=datetime_set_off.hour, minute=datetime_set_off.minute,
                                     second=datetime_set_off.second, microsecond=datetime_set_off.microsecond)
     return time_subtracted
+
+
+def subtract_time_objects(later_time, earlier_time):
+    earlier_datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=earlier_time.hour,
+                                                minute=earlier_time.minute,
+                                                second=earlier_time.second, microsecond=earlier_time.microsecond)
+    later_datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=later_time.hour, minute=later_time.minute,
+                                              second=later_time.second, microsecond=later_time.microsecond)
+
+    time_difference = later_datetime_object - earlier_datetime_object
+
+    return time_difference
