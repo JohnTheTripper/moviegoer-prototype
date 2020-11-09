@@ -5,7 +5,7 @@ from sklearn.cluster import AgglomerativeClustering
 
 
 def read_pickle(film):
-    df_object_directory = '../dataframe_objects/'
+    df_object_directory = '../serialized_objects/'
     film_directory = os.path.join(df_object_directory, film)
     srt_df = pd.read_pickle(os.path.join(film_directory, 'srt_df.pkl'))
     subtitle_df = pd.read_pickle(os.path.join(film_directory, 'subtitle_df.pkl'))
@@ -50,11 +50,11 @@ def cluster_primary_faces(face_df):
 
 # shot cluster
 def cluster_shots(film, vision_df):
-    df_object_directory = '../dataframe_objects/'
+    df_object_directory = '../serialized_objects/'
     film_directory = os.path.join(df_object_directory, film)
     vgg16_feature_list_np = np.load(os.path.join(film_directory, 'vgg16_features.npy'))
 
-    hac = AgglomerativeClustering(n_clusters=None, distance_threshold=3000).fit(vgg16_feature_list_np)
+    hac = AgglomerativeClustering(n_clusters=None, distance_threshold=2750).fit(vgg16_feature_list_np)
     hac_labels = hac.labels_
 
     vision_df['shot_cluster'] = hac_labels
