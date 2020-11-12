@@ -193,3 +193,16 @@ def conversation_boundary(sentence):
             return 'ender'
 
     return None
+
+
+# profanity
+def profanity(sentence, nlp):
+    sent_doc = nlp(sentence)
+    profanity_count = 0
+
+    profanities = ['fuck', 'fucking', 'fuckin', 'fucked', 'shit', 'shitty', 'bullshit', 'ass', 'dumbass', 'bitch', 'asshole', 'tit', 'cunt', 'goddamn', 'damn', 'dammit', 'cock', 'cocksucker', 'dick']
+    for word in sent_doc:
+        if word.lemma_.lower() in profanities:
+            profanity_count += 1
+
+    return profanity_count
