@@ -151,13 +151,13 @@ def find_alternating_scenes(substantial_pairs, vision_df, face_df):
     return alternating_scene_frame_pairs
 
 
-def expand_scene(alternating_scene_frame_pair, vision_df):
+def expand_scene(alternating_scene_frame_pair, vision_df, anchor_search_threshold=6):
     anchor_shot_cluster_pair = list(vision_df[alternating_scene_frame_pair[0] - 1:alternating_scene_frame_pair[1]].shot_cluster.unique())
     anchor_shot_id_pair = [vision_df[alternating_scene_frame_pair[0] - 1:alternating_scene_frame_pair[1]].shot_id.min(),
                            vision_df[alternating_scene_frame_pair[0] - 1:alternating_scene_frame_pair[1]].shot_id.max()]
-    first_anchor_frame = vision_df[(vision_df['shot_id'] > anchor_shot_id_pair[0] - 10) & (vision_df['shot_id'] < anchor_shot_id_pair[1] + 10) & (vision_df['shot_cluster'].isin(anchor_shot_cluster_pair))].index.min()
+    first_anchor_frame = vision_df[(vision_df['shot_id'] > anchor_shot_id_pair[0] - anchor_search_threshold) & (vision_df['shot_id'] < anchor_shot_id_pair[1] + anchor_search_threshold) & (vision_df['shot_cluster'].isin(anchor_shot_cluster_pair))].index.min()
     last_anchor_frame = vision_df[
-        (vision_df['shot_id'] > anchor_shot_id_pair[0] - 10) & (vision_df['shot_id'] < anchor_shot_id_pair[1] + 10) & (
+        (vision_df['shot_id'] > anchor_shot_id_pair[0] - anchor_search_threshold) & (vision_df['shot_id'] < anchor_shot_id_pair[1] + anchor_search_threshold) & (
             vision_df['shot_cluster'].isin(anchor_shot_cluster_pair))].index.max()
     cutaways = vision_df[first_anchor_frame - 1:last_anchor_frame].shot_cluster.unique()
     cutaways = cutaways[cutaways != anchor_shot_cluster_pair[0]] # remove the Speaker A and Speaker B clusters from this list
@@ -191,20 +191,21 @@ def expand_scene(alternating_scene_frame_pair, vision_df):
     return expanded_scene_frame_pair
 
 
-def generate_scenes(vision_df, face_df):
+def generate_scenes(vision_df, face_df, substantial_minimum=6, anchor_search=6):
     alternating_pairs, pair_shot_ids = find_alternating_clusters(vision_df)
-    substantial_pairs = filter_substantial_shot_pairs(pair_shot_ids)
+    substantial_pairs = filter_substantial_shot_pairs(pair_shot_ids, threshold=substantial_minimum)
     alternating_scene_frame_pairs = find_alternating_scenes(substantial_pairs, vision_df, face_df)
 
     expanded_scene_frame_pairs = []
     for alternating_frame_pair in alternating_scene_frame_pairs:
-        expanded_scene_frame_pairs.append(expand_scene(alternating_frame_pair, vision_df))
+        expanded_scene_frame_pairs.append(expand_scene(alternating_frame_pair, vision_df, anchor_search_threshold=anchor_search))
 
     x = 1
     scene_dictionary_list = []
     for expanded_frame_pair in expanded_scene_frame_pairs:
         first_frame = expanded_frame_pair[0]
         last_frame = expanded_frame_pair[1]
+        scene_duration = last_frame + 1 - first_frame
         expanded_face_df = face_df.copy()[first_frame - 1:last_frame]
         left_anchor_shot_cluster = vision_df[vision_df.index.isin(expanded_face_df[expanded_face_df[
                                                                                        'p_center_alignment'] == 'left'].index)].shot_cluster.value_counts().index[
@@ -221,6 +222,7 @@ def generate_scenes(vision_df, face_df):
             scene_dict = {'scene_id': x,
                           'first_frame': first_frame,
                           'last_frame': last_frame,
+                          'scene_duration': scene_duration,
                           'left_anchor_shot_cluster': left_anchor_shot_cluster,
                           'left_anchor_face_cluster': left_anchor_face_cluster,
                           'matching_left_face_clusters': matching_left_face_clusters,
@@ -238,19 +240,3 @@ def generate_scenes(vision_df, face_df):
             x += 1
 
     return scene_dictionaries
-
-
-def get_implied_speaker(sentence_index, sentence_df, subtitle_df, face_df):
-    sub_indices = sentence_df.iloc[sentence_index].subtitle_indices
-    start_frame = time_to_frame(subtitle_df.iloc[sub_indices[0]].start_time)
-    end_frame = time_to_frame(subtitle_df.iloc[sub_indices[-1]].end_time)
-    open_mouth_df = face_df[face_df['p_open_mouth'] == 1].loc[start_frame:end_frame]
-    if len(open_mouth_df) == 0:
-        return None
-    elif len(open_mouth_df.p_face_cluster.value_counts()) == 1:
-        return open_mouth_df.p_face_cluster.value_counts().index[0]
-    elif len(open_mouth_df.p_face_cluster.value_counts()) >= 2: # must check for tie between first two faces
-        if open_mouth_df.p_face_cluster.value_counts().values[0] == open_mouth_df.p_face_cluster.value_counts().values[1]:
-            return None
-        else:
-            return open_mouth_df.p_face_cluster.value_counts().index[0]

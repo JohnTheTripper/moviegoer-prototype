@@ -98,6 +98,22 @@ def plot_character_filmwide_emotion(character_face_clusters, face_df):
         sad_angry_percentage.append(100 * (sad_percentage + angry_percentage))
     plt.bar(x=sequences, height=(sad_angry_percentage), color='salmon')
     plt.xlabel('Film Sequence')
-    plt.ylabel('Sad/Angry Percentage')
-    plt.title('Sad/Angry Emotions Throughout the Film')
+    plt.ylabel('Upset Percentage')
+    plt.title('Upset Facial Expressions Throughout the Film')
     plt.show()
+
+
+def get_biggest_face_frame(character_face_clusters, face_df):
+    x = 0
+    biggest_face_size = 0
+    biggest_face_list_index = 0
+    for face_size in face_df[face_df['p_face_cluster'].isin(character_face_clusters)].face_sizes:
+        if face_size[0] > biggest_face_size:
+            biggest_face_size = face_size[0]
+            biggest_face_list_index = x
+        x += 1
+
+    biggest_face_frame = face_df[face_df['p_face_cluster'].isin(character_face_clusters)].iloc[
+        biggest_face_list_index].name
+
+    return biggest_face_frame
