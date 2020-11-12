@@ -121,7 +121,7 @@ def clean_italic(line):
     line = line.replace('<i>', '').replace('</i>', '')
     return line
 
-
+'''
 def speaker_clean(line):                    # replicated below without clean, will be depreciated
     colon_find = line.find(':')
     speaker = 'none'
@@ -129,7 +129,7 @@ def speaker_clean(line):                    # replicated below without clean, wi
         speaker = line[0:colon_find]
         line = line[colon_find + 2:]
     return speaker, line
-
+'''
 
 def find_speaker(line):
     colon_find = line.find(':')
@@ -146,7 +146,7 @@ def clean_speaker(line):
         line = line[colon_find + 2:]
     return line
 
-
+'''
 def laugh_clean(line):                       # replicated below without clean, will be depreciated
     laugh_found = 0
     laugh_strings = ['(laughing)', '(laughs)', '(laughter)', '(chuckles)', '(chuckling)']
@@ -155,7 +155,7 @@ def laugh_clean(line):                       # replicated below without clean, w
             laugh_found = 1
             line = line.replace(laugh, '')
     return laugh_found, line
-
+'''
 
 def find_laugh(line):
     laugh_found = 0
@@ -165,7 +165,7 @@ def find_laugh(line):
             laugh_found = 1
     return laugh_found
 
-
+'''
 def clean_subs(subs):                   # replicated below, may be depreciated
 
     cleaned_lines = []
@@ -185,8 +185,8 @@ def clean_subs(subs):                   # replicated below, may be depreciated
         cleaned_lines.append(line)
 
     return cleaned_lines
-
-
+'''
+'''
 def clean_and_flag_subs(subs):                      # depreciate
     italic_flags = []
     music_flags = []
@@ -216,7 +216,7 @@ def clean_and_flag_subs(subs):                      # depreciate
         cleaned_lines.append(line)
 
     return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, entire_line_parentheticals
-
+'''
 
 def clean_line(line):
     line = clean_parenthetical(line)
@@ -233,7 +233,7 @@ def remove_blanks(cleaned_lines):
 
     for line in cleaned_lines:
         if line:
-            blanks_removed.append(line)
+            blanks_removed.append(line.strip())
 
     return blanks_removed
 
