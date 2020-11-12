@@ -1,11 +1,11 @@
 # Data Folders
-mcu_data/
 movie_frames/
 frame_per_second/
 input_videos/
 subtitles/
 audio_processing/
 extracted_audio/
+serialized_objects/
 
 # Saved Models
 saved_models/
