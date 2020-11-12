@@ -1,7 +1,9 @@
+import sys
 import pandas as pd
-import datetime
 from subtitle_cleaning_io import *
 from phrases_io import *
+sys.path.append('../unifying_features')
+from time_reference_io import *
 
 
 def generate_srt_df(subs):
@@ -70,6 +72,7 @@ def generate_subtitle_features(subtitle_df):
 
 
 def generate_sentence_features(sentence_df, nlp):
+    sentence_df['profanity'] = sentence_df['sentence'].apply(profanity, args=[nlp])
     sentence_df['self_intro'] = sentence_df['sentence'].apply(self_intro, args=[nlp])
     sentence_df['other_intro'] = sentence_df['sentence'].apply(other_intro, args=[nlp])
     sentence_df['direct_address'] = sentence_df['sentence'].apply(direct_address, args=[nlp])
@@ -112,3 +115,43 @@ def tie_sentence_subtitle_indices(sentences, subtitle_df):
         subtitle_indices.append(list(set(row_indices)))
 
     return subtitle_indices
+
+
+def get_implied_speaker(sentence_index, sentence_df, subtitle_df, face_df):
+    sub_indices = sentence_df.iloc[sentence_index].subtitle_indices
+    start_frame = time_to_frame(subtitle_df.iloc[sub_indices[0]].start_time)
+    end_frame = time_to_frame(subtitle_df.iloc[sub_indices[-1]].end_time)
+    open_mouth_df = face_df[face_df['p_open_mouth'] == 1].loc[start_frame:end_frame]
+    if len(open_mouth_df) == 0:
+        return None
+    elif len(open_mouth_df.p_face_cluster.value_counts()) == 1:
+        return open_mouth_df.p_face_cluster.value_counts().index[0]
+    elif len(open_mouth_df.p_face_cluster.value_counts()) >= 2: # must check for tie between first two faces
+        if open_mouth_df.p_face_cluster.value_counts().values[0] == open_mouth_df.p_face_cluster.value_counts().values[1]:
+            return None
+        else:
+            return open_mouth_df.p_face_cluster.value_counts().index[0]
+
+
+def generate_speakers(sentence_df, subtitle_df, face_df):
+    offscreen_speakers = []
+
+    for sentence_index in range(0, len(sentence_df)):
+        sub_start_index = sentence_df.iloc[sentence_index].subtitle_indices[0]
+        if subtitle_df.iloc[sub_start_index].speaker:
+            offscreen_speakers.append(subtitle_df.iloc[sub_start_index].speaker)
+        else:
+            offscreen_speakers.append(None)
+
+    implied_speakers = []
+
+    for sentence_index in range(0, len(sentence_df)):
+        if not offscreen_speakers[sentence_index]:
+            implied_speakers.append(get_implied_speaker(sentence_index, sentence_df, subtitle_df, face_df))
+        else:
+            implied_speakers.append(None)
+
+    sentence_df['offscreen_speaker'] = offscreen_speakers
+    sentence_df['implied_speaker'] = implied_speakers
+
+    return sentence_df
