@@ -1,11 +1,14 @@
 from vision_features_io import *
 import face_recognition
-from deepface import DeepFace
 import math
-import os
 
 
 def primary_character_flag(locations):
+    """
+    returns a flag if the frame has a primary character
+    returns 1 if there's only one face in frame
+    if there's more than one face, returns 1 if 75% of the largest face is larger than the second-largest face
+    """
     if len(locations) == 1:
         return 1
     else:
@@ -21,6 +24,9 @@ def primary_character_flag(locations):
 
 
 def third_points_alignment(character, frame):
+    """
+    returns 'left' or 'right' if a face is horizontally aligned with either rule-of-thirds point
+    """
     thirds_point_a, thirds_point_b, thirds_point_c, thirds_point_d = thirds_points(frame)
 
     if character[3] <= thirds_point_a[0] <= character[1] and character[0] <= thirds_point_a[1] <= character[2]:
@@ -32,6 +38,9 @@ def third_points_alignment(character, frame):
 
 
 def horizontal_center_alignment(character, frame):
+    """
+    returns 'left' or 'right' if a face is entirely on side of horizontal midpoints
+    """
     vertical_center = center_point(frame)[0]
 
     if character[1] > vertical_center and character[3] > vertical_center:
@@ -43,6 +52,11 @@ def horizontal_center_alignment(character, frame):
 
 
 def horizontal_distance_from_center(character, frame):
+    """
+    returns the maximum distance of a face from the horizontal midpoint, if the face entirely on one side of midpoint
+    if the face is to the left of the center, returns distance between face's left edge to midpoint
+    if the face is to the right of the center, returns distance between face's right edge to midpoint
+    """
     vertical_center = center_point(frame)[0]
 
     if character[1] > vertical_center and character[3] > vertical_center:
@@ -54,6 +68,9 @@ def horizontal_distance_from_center(character, frame):
 
 
 def get_face_size(locations, frame):
+    """
+    returns the size of a face, as a percentage of the image size
+    """
     face_size = pow((locations[1] - locations[3]), 2)
     image_size = frame.shape[0] * frame.shape[1]
     face_size *= 100
@@ -64,7 +81,7 @@ def get_face_size(locations, frame):
 def analyze_mouth_open(frame_folder, film, frame_choice):
     """
     returns a list of flags, for if a character has their mouth open, in each frame
-    returns a 0 if no face detected in frame
+    in each frame, returns 0 if no face detected in frame
     """
     mouth_open_list = []
 
@@ -87,6 +104,9 @@ def analyze_mouth_open(frame_folder, film, frame_choice):
 
 
 def get_lip_height(lip):
+    """
+    returns the height of a lip (top or bottom) on a face
+    """
     for i in [2, 3, 4]:
         sum = 0
         distance = math.sqrt((lip[i][0] - lip[12-i][0])**2 + (lip[i][1] - lip[12-i][1])**2)
@@ -95,6 +115,9 @@ def get_lip_height(lip):
 
 
 def get_mouth_height(top_lip, bottom_lip):
+    """
+    returns the mouth size
+    """
     for i in [8, 9, 10]:
         sum = 0
         distance = math.sqrt((top_lip[i][0] - bottom_lip[18-i][0])**2 + (top_lip[i][1] - bottom_lip[18-i][1])**2)
@@ -103,6 +126,9 @@ def get_mouth_height(top_lip, bottom_lip):
 
 
 def mouth_open_check(face_landmarks, open_ratio=.8):
+    """
+    returns 1 if the mouth size is above a certain percentage threshold of combined top and bottom lip size
+    """
     top_lip = face_landmarks['top_lip']
     bottom_lip = face_landmarks['bottom_lip']
 
@@ -114,11 +140,3 @@ def mouth_open_check(face_landmarks, open_ratio=.8):
         return 1
     else:
         return 0
-
-
-def get_primary_char_emotion(film, frame_number):
-    frame_folder = os.path.join('../frame_per_second', film)
-    img_path = frame_folder + '/' + film + '_frame_' + str(frame_number) + '.jpg'
-
-    obj = DeepFace.analyze(img_path, actions=['emotion'], enforce_detection=False)
-    return obj["dominant_emotion"]
