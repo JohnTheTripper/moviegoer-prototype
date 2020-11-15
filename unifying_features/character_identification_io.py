@@ -4,8 +4,8 @@ from subtitle_dataframes_io import *
 from subtitle_auxiliary_io import *
 sys.path.append('../vision_features')
 from vision_dataframes_io import *
-sys.path.append('../audio_features')
-from audio_dataframes_io import *
+#sys.path.append('../audio_features')
+#from audio_dataframes_io import *
 from time_reference_io import *
 from collections import Counter
 
