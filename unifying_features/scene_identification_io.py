@@ -56,13 +56,15 @@ def find_alternating_clusters(vision_df):
     return alternating_pairs, pair_shot_ids
 
 
-def filter_substantial_shot_pairs(pair_shot_ids, threshold=6):
-    substantial_pairs = []
-    for pair in pair_shot_ids:
-        if pair[1] - pair[0] > threshold:
-            substantial_pairs.append(pair)
+def filter_substantial_shot_pairs(alternating_pairs, pair_shot_ids, threshold=6):
+    substantial_pair_shot_ids = []
+    substantial_anchor_shot_clusters = []
 
-    return substantial_pairs
+    for anchor_pair, shot_id_pair in zip(alternating_pairs, pair_shot_ids):
+        if shot_id_pair[1] - shot_id_pair[0] > threshold:
+            substantial_pair_shot_ids.append(shot_id_pair)
+            substantial_anchor_shot_clusters.append(anchor_pair)
+    return substantial_anchor_shot_clusters, substantial_pair_shot_ids
 
 
 def left_face_clusters(alternation_face_df):
@@ -119,10 +121,11 @@ def right_face_clusters(alternation_face_df):
         return None, None
 
 
-def find_alternating_scenes(substantial_pairs, vision_df, face_df):
+def find_alternating_scenes(substantial_anchor_shot_clusters, substantial_pair_shot_ids, vision_df, face_df):
     alternating_scene_frame_pairs = []
+    alternating_scene_anchor_pairs = []
 
-    for pair in substantial_pairs:
+    for pair, anchors in zip(substantial_pair_shot_ids, substantial_anchor_shot_clusters):
         first_frame = vision_df[vision_df['shot_id'].isin([pair[0], pair[1]])][:1].index[0]
         last_frame = vision_df[vision_df['shot_id'].isin([pair[0], pair[1]])][-1:].index[0]
         alternation_face_df = face_df.copy()[first_frame - 1:last_frame]
@@ -143,12 +146,13 @@ def find_alternating_scenes(substantial_pairs, vision_df, face_df):
             if prim_face_percentage >= .8:
                 #print('!!!two character alternating scene candidate found!!!')
                 alternating_scene_frame_pairs.append([first_frame, last_frame])
+                alternating_scene_anchor_pairs.append(anchors)
         else:
             pass
             #print('no participants found')
         #print()
 
-    return alternating_scene_frame_pairs
+    return alternating_scene_frame_pairs, alternating_scene_anchor_pairs
 
 
 def expand_scene(alternating_scene_frame_pair, vision_df, anchor_search_threshold=6):
@@ -193,8 +197,8 @@ def expand_scene(alternating_scene_frame_pair, vision_df, anchor_search_threshol
 
 def generate_scenes(vision_df, face_df, substantial_minimum=6, anchor_search=6):
     alternating_pairs, pair_shot_ids = find_alternating_clusters(vision_df)
-    substantial_pairs = filter_substantial_shot_pairs(pair_shot_ids, threshold=substantial_minimum)
-    alternating_scene_frame_pairs = find_alternating_scenes(substantial_pairs, vision_df, face_df)
+    substantial_anchor_shot_clusters, substantial_pair_shot_ids  = filter_substantial_shot_pairs(alternating_pairs, pair_shot_ids, threshold=substantial_minimum)
+    alternating_scene_frame_pairs, alternating_scene_anchor_pairs = find_alternating_scenes(substantial_anchor_shot_clusters, substantial_pair_shot_ids, vision_df, face_df)
 
     expanded_scene_frame_pairs = []
     for alternating_frame_pair in alternating_scene_frame_pairs:
@@ -202,19 +206,16 @@ def generate_scenes(vision_df, face_df, substantial_minimum=6, anchor_search=6):
 
     x = 1
     scene_dictionary_list = []
-    for expanded_frame_pair in expanded_scene_frame_pairs:
+    for expanded_frame_pair, scene_anchor_pair in zip(expanded_scene_frame_pairs, alternating_scene_anchor_pairs):
         first_frame = expanded_frame_pair[0]
         last_frame = expanded_frame_pair[1]
         scene_duration = last_frame + 1 - first_frame
         expanded_face_df = face_df.copy()[first_frame - 1:last_frame]
-        left_anchor_shot_cluster = vision_df[vision_df.index.isin(expanded_face_df[expanded_face_df[
-                                                                                       'p_center_alignment'] == 'left'].index)].shot_cluster.value_counts().index[
-            0]
+        expanded_vision_df = vision_df.copy()[first_frame - 1:last_frame]
+        left_anchor_shot_cluster = expanded_vision_df[(expanded_face_df['p_center_alignment'] == 'left') & (expanded_vision_df.shot_cluster.isin(scene_anchor_pair))].shot_cluster.value_counts().index[0]
         left_anchor_face_cluster, matching_left_face_clusters = left_face_clusters(expanded_face_df)
         right_anchor_face_cluster, matching_right_face_clusters = right_face_clusters(expanded_face_df)
-        right_anchor_shot_cluster = vision_df[vision_df.index.isin(expanded_face_df[expanded_face_df[
-                                                                                        'p_center_alignment'] == 'right'].index)].shot_cluster.value_counts().index[
-            0]
+        right_anchor_shot_cluster = expanded_vision_df[(expanded_face_df['p_center_alignment'] == 'right') & (expanded_vision_df.shot_cluster.isin(scene_anchor_pair))].shot_cluster.value_counts().index[0]
         cutaway_shot_clusters = vision_df[first_frame - 1:last_frame].shot_cluster.unique()
         cutaway_shot_clusters = cutaway_shot_clusters[cutaway_shot_clusters != left_anchor_shot_cluster]
         cutaway_shot_clusters = list(cutaway_shot_clusters[cutaway_shot_clusters != right_anchor_shot_cluster])
