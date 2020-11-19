@@ -1,10 +1,18 @@
 import cv2
 import os
 
+"""
+extracts .jpg frames from a movie file and populates into /frame_per_second/ directory
+extracts one .jpg per second of film
+to use, place movie file in /input_videos/ and change title and optional scale_percent
+"""
+
 # create frames from video file
-title = 'knives_out_2019'
+title = 'black_and_blue_2019'
 scale_percent = 100     # no image scaling
 # scale_percent = 44.44     # optional image scaling, 1080p to 480p
+
+'''change above parameters'''
 
 cap = cv2.VideoCapture('../input_videos/' + title + '.mkv')
 # cap = cv2.VideoCapture('input_videos/' + title + '.mp4')

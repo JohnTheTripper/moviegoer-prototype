@@ -6,10 +6,17 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
 
-# to be run in Docker container to take advantage of GPU
+"""
+uses VGG16 image recognition model to vectorize image files and exports to a single numpy file
+does not work on animated movies
+to be run in Docker container to take advantage of GPU, using "tensorflow:latest-gpu" Docker image
+to use, change film and frame_choice
+"""
 
-film = 'plus_one_2019'
-frame_choice = range(1, 5913)   # (1, number of frame files plus one)
+film = 'black_and_blue_2019'
+frame_choice = range(1, 6478)   # (1, number of frame files plus one)
+
+'''change above parameters'''
 
 serialized_object_directory = '../serialized_objects/'
 film_directory = os.path.join(serialized_object_directory, film)

@@ -11,8 +11,15 @@ sys.path.append('../unifying_features')
 from time_reference_io import *
 nlp = spacy.load('en')
 
-film = 'plus_one_2019'
-frame_choice = range(1, 5913)   # (1, number of frame files plus one)
+"""
+creates base dataframes from image frames and subtitle file, and exports to pickle files
+to use, place subtitle file in /subtitles/ and change film and frame_choice
+"""
+
+film = 'black_and_blue_2019'
+frame_choice = range(1, 6478)   # (1, number of frame files plus one)
+
+'''change above parameters'''
 
 serialized_object_directory = '../serialized_objects/'
 film_directory = os.path.join(serialized_object_directory, film)
@@ -30,7 +37,6 @@ vision_df.to_pickle(os.path.join(film_directory, 'vision_df_pre_cluster.pkl'))
 subs_directory = '../subtitles/'
 subs = pysrt.open(os.path.join(subs_directory, film + '.srt'))
 srt_df = generate_srt_df(subs)
-srt_df.head()
 subtitle_df = generate_base_subtitle_df(subs)
 subtitle_df = generate_subtitle_features(subtitle_df)
 subtitle_df['cleaned_text'] = subtitle_df['concat_sep_text'].map(clean_line)

@@ -6,6 +6,15 @@ from vision_dataframes_io import *
 from deepface import DeepFace
 import pandas as pd
 
+"""
+performs emotion recognition where primary faces are listed as found in face_df
+to use, change film
+"""
+
+film = 'black_and_blue_2019'
+
+'''change above parameters'''
+
 
 def get_primary_char_emotion(film, frame_number):
     frame_folder = os.path.join('../frame_per_second', film)
@@ -15,7 +24,6 @@ def get_primary_char_emotion(film, frame_number):
     return obj["dominant_emotion"]
 
 
-film = 'plus_one_2019'
 serialized_object_directory = '../serialized_objects/'
 film_directory = os.path.join(serialized_object_directory, film)
 

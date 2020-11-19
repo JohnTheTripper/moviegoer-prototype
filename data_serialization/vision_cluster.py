@@ -5,7 +5,14 @@ import pandas as pd
 sys.path.append('../subtitle_features')
 from subtitle_dataframes_io import *
 
-film = 'plus_one_2019'
+"""
+performs clustering of frames (from saved numpy file of VGG16 vectorizations) and faces (from pickled face_df dataframe)
+to use, change film
+"""
+
+film = 'black_and_blue_2019'
+
+'''change above parameters'''
 
 serialized_object_directory = '../serialized_objects/'
 film_directory = os.path.join(serialized_object_directory, film)
