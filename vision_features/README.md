@@ -10,9 +10,10 @@ The directory contains the following files:
 
 1. *dimensions.ipynb* - explores features related to the image size, as well as identifies specific points-of-interest, like rule-of-thirds intersections
 2. *chroma_luma.ipynb* - explores features related to color intensity (chroma) and overall brightness (luma)
-3. *onscreen_text* - uses optical character recognition to detect and store onscreen text
-4. *faces* - identifies number, size, and location of faces in frame
-5. *vision_features_io.py* - contains all functions
+3. *onscreen_text.ipynb* - uses optical character recognition to detect and store onscreen text
+4. *faces.ipynb* - identifies number, size, and location of faces in frame
+5. *vision_features_io.py* - functions for all vision features
+6. *vision_dataframes_io.py* - functions for creating vision-related dataframes
 
 ## Vision Feature Categories
 A single movie frame can be a powerful medium for conveying emotion. While they communicate important plot information like onscreen characters and location, they can also influence the impact of onscreen action through subtle choices in light and color. Dramas may have scenes with very bright and very dark areas, a high contrast that doesn’t exist in well-lit comedies. Scenes that skew blue are “cooler”, and may depict locations that are unfeeling or clinical. These aspects don’t happen by chance – they are conscious directorial decisions.
