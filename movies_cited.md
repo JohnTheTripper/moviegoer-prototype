@@ -1,4 +1,11 @@
-## Movies Used for Training MCU Classifier, and Other Modules
+## Movies Used for Prototype Demo
+- *Booksmart*. Directed by Olivia Wilde, Annapurna Pictures, 2019.
+- *Ford v Ferrari*. Directed by James Mangold, Chernin Entertainment, 2019.
+- *Lost in Translation*. Directed by Sofia Coppola, Focus Features, 2003.
+- *Plus One*. Directed by Jeff Chan and Andrew Rhymer, Red Hour Productions, 2019.
+
+## Movies Used for Training MCU Classifier and Other Modules
+Note: These films were used to train an image classifier model, which is no longer used. They may, however, appear elsewhere in the project.
 - *American Bistro*. Directed by Arthur Diennet, Diennet Productions, 2019.
 - *Animals*. Directed by Sophie Hyde, Closer Productions, 2019.
 - *Ballon*. Directed by Michael Herbig, herbX Film, 2018.
@@ -27,7 +34,7 @@
 - *No Escape*. Directed by John Erick Dowdle, Bold Films, 2015.
 - *Parasite*. Directed by Bong Joon-ho, Barunson E&A, 2019.
 - *Parts You Lose, The*. Directed by Christopher Cantwell, The H Collective, 2019.
-- *Plus One*. Directed by Jeff Chan, Red Hour Productions, 2019.
+- *Plus One*. Directed by Jeff Chan and Andrew Rhymer, Red Hour Productions, 2019.
 - *Preggoland*. Directed by Jacob Tierney, Optic Nerve Films, 2014.
 - *Ready or Not*. Directed by Matt Bettinelli-Olpin and Tyler Gillett, Mythology Entertainment, 2019.
 - *Saint Judy*. Directed by Sean Hanish, Cannonball Productions, 2019.
@@ -39,8 +46,7 @@
 - *What Still Remains*. Directed by Josh Mendoza, Strike the Sun Entertainment, 2018.
 - *Yesterday*. Directed by Danny Boyle, Perfect World Pictures, 2019.
 
-Some of the above movies were also used for other *Moviegoer* modules. The below movies were not used for shot modeling, but were used in other modules.
-
 ## Movies Used for Scene Clustering, Dialogue Attribution, Vision Features, etc.
+The below movies were not used for shot modeling, but were elsewhere
 - *Rides Start at 10:00*. Directed by Tim Lee, not distributed, 2017.
 - *Teen Spirit*. Directed by Max Minghella, Mister Smith Entertainment, 2018.
