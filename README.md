@@ -18,7 +18,32 @@ Movies are chronologically linear, with clear cause-and-effect. Characters are e
 
 For more background on the data I hope to extract, see this post: [The Case for Teaching Emotion to AI by Having Them Watch Movies](https://towardsdatascience.com/moviegoer-the-case-for-teaching-emotion-to-ai-by-having-them-watch-movies-b2a7682edb1d)
 
-As a starting point, the project scope is limited to the two-character dialogue scene, the fundamental building block of nearly every film. From an information theory perspective, two-character dialogue scenes are very dense. No distractions, just two characters speaking and advancing the plot. In the future, advancements made in certain modules will pave the way for widening the scope beyond two-character dialogue scenes. 
+# Four Categories of Comprehension
+Continued progress has helped clarify the overall goals of the project — we’ve identified four broad categories of knowledge that Moviegoer must identify and recognize. These categories aren’t tied to any specific aspect of the tech stack, and advances in one category may support another. Much like a human viewer, a machine must be able to parse four categories of comprehension to “watch a movie”: film structure; characters; plot and events; and style features.
+
+### Structure
+Though taken completely for granted by an audience, a movie is comprised of granular, self-contained units called “scenes”, which usually take place at a fixed location and involve one or more characters. A machine must be able to recognize the beginnings and endings of individual scenes. This type of analysis can be extended to other units, from the three acts that form the entire film, all the way down to the individual shot.
+
+As a starting point, *Moviegoer* identifies two-character dialogue scene, the fundamental building block of nearly every film. From an information theory perspective, two-character dialogue scenes are very dense. No distractions, just two characters speaking and advancing the plot.
+
+![Lost in Translation Scene Identification](/readme_images/pd_scene_lit_1a.png "Lost in Translation Scene Identification")
+
+### Plot
+A film consists of many different events and happenings. A robot must understand how the emotional significance of specific events (e.g. a love interest gets a significant other, a rival gets a job promotion, a daughter becomes injured) and how they impact character goals.
+
+![Plus One (2019) Scene Emotional Analysis](/readme_images/pd_scene_po_17.png "Plus One (2019) Scene Emotional Analysis")
+
+### Characters
+Each character has a unique face and voice, which can be tracked throughout the film. These help with predicting character demographics. In order to understand character motivations, spoken dialogue must be attributed to individual characters to identify what’s important to them.
+
+![Plus One (2019) Character Information](/readme_images/pd_character_demographics_emotion.png "Plus One (2019) Character Information")
+
+### Style
+These are artistic choices, such as shot length or color scheme, used to elicit specific emotions in the audience. Music score is the most prominent example — although we understand this music doesn’t actually exist within the scene, it’s been layered on top of it to make the audience feel sad, excited, tense, or a multitude of other emotions.
+
+This category of comprehension is simultaneously the most powerful as well as the most debatable. Recognizing these clues (and coding them into the project) relies heavily on domain knowledge in filmmaking. These empirical rules have evolved from over a century’s worth of advances in filmmaking, and require a strong understanding of the craft. At the same time, some directors will consciously flout these rules as an artistic choice, and *Moviegoer* must be ready to accept these scenarios. But, if a style rule helps us interpret emotion in 99% of films, across all genres, it’ll greatly help in interpreting films.
+
+![Booksmart (2019) Color Shots](/readme_images/pd_color_shots.png "Booksmart (2019) Color Shots")
 
 # Repository Files
 This project contains several directories, each focused on a separated task. **Each directory has its own Readme file**, going into further detail on contents and design decisions.
@@ -45,37 +70,9 @@ After taking a deep dive into the individual data streams of visuals, audio, and
 These five files, when run in sequence, process a movie and turn it into the dataframes that power the analytical functions.
 
 ### Prototype Demo - Moviegoer Capabilities
-This is a visual demonstration of how structured data from films can be used. The demo covers applications in each of the four categories of comprehension (see next section).
-
-# Four Categories of Comprehension
-Continued progress has helped clarify the overall goals of the project — we’ve identified four broad categories of knowledge that Moviegoer must identify and recognize. These categories aren’t tied to any specific aspect of the tech stack, and advances in one category may support another. Much like a human viewer, a machine must be able to parse four categories of comprehension to “watch a movie”: film structure; characters; plot and events; and style features.
-
-### Structure
-Though taken completely for granted by an audience, a movie is comprised of granular, self-contained units called “scenes”, which usually take place at a fixed location and involve one or more characters. A machine must be able to recognize the beginnings and endings of individual scenes. This type of analysis can be extended to other units, from the three acts that form the entire film, all the way down to the individual shot.
-
-![Lost in Translation Scene Identification](/readme_images/pd_scene_lit_1a.png "Lost in Translation Scene Identification")
-
-### Plot
-A film consists of many different events and happenings. A robot must understand how the significance of specific events (e.g. a love interest gets a significant other, a rival gets a job promotion, a daughter becomes injured) and how they impact character goals.
-
-![Plus One (2019) Scene Emotional Analysis](/readme_images/pd_scene_po_17.png "Plus One (2019) Scene Emotional Analysis")
-
-### Characters
-Each character has a unique face and voice, which can be tracked throughout the film. These help with predicting character demographics (age, race, gender). In order to understand character motivations, spoken dialogue must be attributed to individual characters to identify what’s important to them.
-
-![Plus One (2019) Character Information](/readme_images/pd_character_demographics_emotion.png "Plus One (2019) Character Information")
-
-### Style
-These are artistic choices, such as shot length or color scheme, used to elicit specific emotions in the audience. Music score is the most prominent example — although we understand this music doesn’t actually exist within the scene, it’s been layered on top of it to make the audience feel sad, excited, tense, or a multitude of other emotions.
-
-This category of comprehension is simultaneously the most powerful as well as the most debatable. Recognizing these clues (and coding them into the project) relies heavily on domain knowledge in filmmaking. These empirical rules have evolved from over a century’s worth of advances in filmmaking, and require a strong understanding of the craft. At the same time, some directors will consciously flout these rules as an artistic choice, and Moviegoer must be ready to accept these scenarios. But, if a style rule helps us interpret emotion in 99% of films, across all genres, it’ll greatly help in interpreting films.
-
-![Booksmart (2019) Color Shots](/readme_images/pd_color_shots.png "Booksmart (2019) Color Shots")
+This is a visual demonstration of how structured data from films can be used. The demo covers applications in each of the four categories of comprehension.
 
 # Additional Information
-### Frames, not Videos
-This project will strictly be using frames (screenshots), as opposed to video snippets (multiple frames), as input data. This has a number of benefits: reducing computational complexity, removing the need for recurrent elements of neural networks, and more granular data. This, of course, requires some sort of external timestamping system to track where frames occur in the film.
-
 ### Movie Copyright
 A list of films used in this project is available in the movies_cited.md file.
 
