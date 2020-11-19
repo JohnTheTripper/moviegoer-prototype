@@ -3,6 +3,9 @@ import numpy as np
 
 
 def analyze_audible_sound(audio_file, plot=False):
+    """
+    returns a list of flags denoting if a portion of audio is completely silent, one per second
+    """
     sampling_rate, signal = pyAudioAnalysis.audioBasicIO.read_audio_file(audio_file)
     segments_with_sound = pyAudioAnalysis.audioSegmentation.silence_removal(signal, sampling_rate, st_win=0.05,
                                                                             st_step=0.025, smooth_window=0.5,
@@ -35,6 +38,12 @@ def analyze_audible_sound(audio_file, plot=False):
 
 
 def cluster_voices(audio_file, audible_sound, plot=True):
+    """
+    returns a list of labels for speaker in a two-character conversation, one per second
+    arbitrarily returns one speaker as M, and the other as N
+    label denotes who is currently speaking, and if no one currently speaking, who spoke last
+    if both characters speak during a period, tries to calculate who spoke for a longer portion
+    """
     clusters = pyAudioAnalysis.audioSegmentation.speaker_diarization(audio_file, n_speakers=2, mid_window=0.8,
                                                                      mid_step=0.1, short_window=0.02, lda_dim=0,
                                                                      plot_res=plot)
@@ -49,5 +58,3 @@ def cluster_voices(audio_file, audible_sound, plot=True):
         x += 10
 
     return speaker_list
-
-

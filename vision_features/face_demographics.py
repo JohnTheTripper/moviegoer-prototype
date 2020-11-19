@@ -11,6 +11,10 @@ from deepface import DeepFace
 
 
 def get_biggest_face_frame(character_face_clusters, face_df):
+    """
+    returns the frame with the biggest face size of a given character
+    useful for finding a frame to look up facial demographics
+    """
     x = 0
     biggest_face_size = 0
     biggest_face_list_index = 0
@@ -27,6 +31,9 @@ def get_biggest_face_frame(character_face_clusters, face_df):
 
 
 def display_character_demographics(film, chosen_character_index):
+    """
+    prints predicted age, race, and emotion for a given character
+    """
     srt_df, subtitle_df, sentence_df, vision_df, face_df = read_pickle(film)
     scene_dictionaries = generate_scenes(vision_df, face_df, substantial_minimum=4, anchor_search=8)
     character_dictionaries = generate_characters(scene_dictionaries)

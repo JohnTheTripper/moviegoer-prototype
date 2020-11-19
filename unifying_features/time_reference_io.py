@@ -2,6 +2,10 @@ import datetime
 
 
 def frame_to_time(frame_number):
+    """
+    returns datetime.time object
+    converts frame number to time
+    """
     seconds = frame_number % (24 * 3600)
     hours = seconds // 3600
     seconds %= 3600
@@ -14,6 +18,10 @@ def frame_to_time(frame_number):
 
 
 def time_to_frame(time):
+    """
+    returns frame number (int)
+    converts datetime.time object to frame number
+    """
     frame_number = (time.hour * 3600) + (time.minute * 60) + (time.second)
     if time.microsecond >= 500000:
         frame_number += 1
@@ -22,6 +30,10 @@ def time_to_frame(time):
 
 
 def subtitle_mid_time(start_time, end_time):
+    """
+    returns the midpoint between a subtitle's start and end time
+    useful for trying to assign a specific frame to a given subtitle
+    """
     delta = datetime.datetime.combine(datetime.date.today(), end_time) - datetime.datetime.combine(
         datetime.date.today(), start_time)
     mid_time_day = (delta / 2) + datetime.datetime.combine(datetime.date.today(), start_time)
@@ -31,6 +43,10 @@ def subtitle_mid_time(start_time, end_time):
 
 
 def add_time_offset(time_object, offset):
+    """
+    returns a time object with an offset added
+    necessary because datetime.time objects don't support addition or subtraction
+    """
     datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=time_object.hour, minute=time_object.minute,
                                         second=time_object.second, microsecond=time_object.microsecond)
     datetime_offset = datetime.timedelta(milliseconds=offset)
@@ -41,6 +57,10 @@ def add_time_offset(time_object, offset):
 
 
 def subtract_time_offset(time_object, offset):
+    """
+    returns a time object with an offset subtracted
+    necessary because datetime.time objects don't support addition or subtraction
+    """
     datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=time_object.hour, minute=time_object.minute,
                                         second=time_object.second, microsecond=time_object.microsecond)
     datetime_offset = datetime.timedelta(milliseconds=offset)
@@ -51,6 +71,11 @@ def subtract_time_offset(time_object, offset):
 
 
 def subtract_time_objects(later_time, earlier_time):
+    """
+    returns the difference between two datetime.time objects
+    necessary because datetime.time objects don't support addition or subtraction
+    useful for figuring out time between subtitles
+    """
     earlier_datetime_object = datetime.datetime(year=2000, month=1, day=1, hour=earlier_time.hour,
                                                 minute=earlier_time.minute,
                                                 second=earlier_time.second, microsecond=earlier_time.microsecond)

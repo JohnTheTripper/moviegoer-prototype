@@ -7,6 +7,9 @@ from time_reference_io import *
 
 
 def generate_srt_df(subs):
+    """
+    returns srt_df, a basic dataframes of subtitles and their start/end times
+    """
     indices = []
     original_texts = []
     start_times = []
@@ -27,6 +30,9 @@ def generate_srt_df(subs):
 
 
 def generate_base_subtitle_df(subs):
+    """
+    returns subtitle_df, a dataframe with original/cleaned subtitle lines and their start/end times
+    """
     indices = []
     original_texts = []
     start_times = []
@@ -60,6 +66,9 @@ def generate_base_subtitle_df(subs):
 
 
 def generate_subtitle_features(subtitle_df):
+    """
+    returns subtitle_df with various new feature columns added
+    """
     subtitle_df['laugh'] = subtitle_df['concat_sep_text'].map(find_laugh)
     subtitle_df['hesitation'] = subtitle_df['concat_sep_text'].map(find_midsentence_interjection)
     subtitle_df['speaker'] = subtitle_df['concat_sep_text'].map(find_speaker)
@@ -72,6 +81,9 @@ def generate_subtitle_features(subtitle_df):
 
 
 def generate_sentence_features(sentence_df, nlp):
+    """
+    returns subtitle_df with various new feature columns added
+    """
     sentence_df['profanity'] = sentence_df['sentence'].apply(profanity, args=[nlp])
     sentence_df['self_intro'] = sentence_df['sentence'].apply(self_intro, args=[nlp])
     sentence_df['other_intro'] = sentence_df['sentence'].apply(other_intro, args=[nlp])
@@ -82,6 +94,9 @@ def generate_sentence_features(sentence_df, nlp):
 
 
 def tie_sentence_subtitle_indices(sentences, subtitle_df):
+    """
+    for each row of sentence_df, returns a list of indices corresponding to subtitle_df, to tie them together
+    """
     row_count = 0
     character_count = 0
     subtitle_indices = []
@@ -118,6 +133,11 @@ def tie_sentence_subtitle_indices(sentences, subtitle_df):
 
 
 def get_implied_speaker(sentence_index, sentence_df, subtitle_df, face_df):
+    """
+    returns the implied speaker of a sentence
+    calculates the frames onscreen during the entire duration of the subtitle, and checks for faces with open mouths
+    somewhat experimental
+    """
     sub_indices = sentence_df.iloc[sentence_index].subtitle_indices
     start_frame = time_to_frame(subtitle_df.iloc[sub_indices[0]].start_time)
     end_frame = time_to_frame(subtitle_df.iloc[sub_indices[-1]].end_time)
@@ -134,6 +154,11 @@ def get_implied_speaker(sentence_index, sentence_df, subtitle_df, face_df):
 
 
 def generate_speakers(sentence_df, subtitle_df, face_df):
+    """
+    returns sentence_df with two new columns for speaker names
+    finds (best-guess) implied speakers based on onscreen faces with open mouths
+    also finds (ground truth) offscreen speaker names
+    """
     offscreen_speakers = []
 
     for sentence_index in range(0, len(sentence_df)):

@@ -5,6 +5,12 @@ from time_reference_io import *
 
 
 def find_alternating_clusters(vision_df):
+    """
+    returns two lists: alternating pairs of shot clusters, and the corresponding start/end shot_ids
+    the heart of the scene identification algorithm, finds shots which follow an A/B/A/B pattern
+    these shots are known as "anchors"
+    useful for finding dialogue scenes, which are overwhelmingly filmed in the shot/reverse-shot style
+    """
     shot_id_list = vision_df.shot_id.tolist()
     shot_clusters = vision_df.shot_cluster.tolist()
     frame_choice = range(1, (len(vision_df) + 1))
@@ -57,6 +63,9 @@ def find_alternating_clusters(vision_df):
 
 
 def filter_substantial_shot_pairs(alternating_pairs, pair_shot_ids, threshold=6):
+    """
+    returns an updated list of alternating shot pairs, by checking for a minimum threshold of A/B/A/B altneration
+    """
     substantial_pair_shot_ids = []
     substantial_anchor_shot_clusters = []
 
@@ -68,6 +77,10 @@ def filter_substantial_shot_pairs(alternating_pairs, pair_shot_ids, threshold=6)
 
 
 def left_face_clusters(alternation_face_df):
+    """
+    returns the primary face cluster for the left character in a scene, and a list of additional matching face clusters
+    primary face cluster is the most prevalent, and matching clusters are the rest
+    """
     matching_left_clusters = []
 
     left_value_counts = alternation_face_df[(alternation_face_df['p_center_alignment'] == 'left') & (alternation_face_df['faces_found'] == 1)].p_face_cluster.value_counts(normalize=True)
@@ -88,6 +101,10 @@ def left_face_clusters(alternation_face_df):
 
 
 def right_face_clusters(alternation_face_df):
+    """
+    returns the primary face cluster for the right character in a scene, and a list of additional matching face clusters
+    primary face cluster is the most prevalent, and matching clusters are the rest
+    """
     matching_right_clusters = []
 
     right_value_counts = alternation_face_df[(alternation_face_df['p_center_alignment'] == 'right') & (
@@ -122,6 +139,10 @@ def right_face_clusters(alternation_face_df):
 
 
 def find_alternating_scenes(substantial_anchor_shot_clusters, substantial_pair_shot_ids, vision_df, face_df):
+    """
+    returns a list of dialogue scenes, by searching groups of alternating shots to see if they actually contain faces
+    used to confirm alternating shots are actually dialogue scenes
+    """
     alternating_scene_frame_pairs = []
     alternating_scene_anchor_pairs = []
 
@@ -136,26 +157,22 @@ def find_alternating_scenes(substantial_anchor_shot_clusters, substantial_pair_s
             alternation_face_df) * 100
         left_anchor_face_cluster, matching_left_clusters = left_face_clusters(alternation_face_df)
         right_anchor_face_cluster, matching_right_clusters = right_face_clusters(alternation_face_df)
-        #print(pair)
-        #print(first_frame, last_frame)
-        #print('left or right frames make up', int(left_right_percentage), 'percent of frames')
-        #print(int(prim_face_percentage), 'percent of frames have a primary face')
         if left_anchor_face_cluster and right_anchor_face_cluster:
-            #print('left participant is', left_anchor_face_cluster, 'and also maybe', matching_left_clusters)
-            #print('right participant is', right_anchor_face_cluster, 'and also maybe', matching_right_clusters)
             if prim_face_percentage >= .8:
-                #print('!!!two character alternating scene candidate found!!!')
                 alternating_scene_frame_pairs.append([first_frame, last_frame])
                 alternating_scene_anchor_pairs.append(anchors)
         else:
             pass
-            #print('no participants found')
-        #print()
 
     return alternating_scene_frame_pairs, alternating_scene_anchor_pairs
 
 
 def expand_scene(alternating_scene_frame_pair, vision_df, anchor_search_threshold=6):
+    """
+    returns expanded scenes, by defining their start and end frames
+    expands scenes by identifying cutaway shots
+    scenes are expanded by checking for cutaways before or after the original scene boundary (defined by the anchors)
+    """
     anchor_shot_cluster_pair = list(vision_df[alternating_scene_frame_pair[0] - 1:alternating_scene_frame_pair[1]].shot_cluster.unique())
     anchor_shot_id_pair = [vision_df[alternating_scene_frame_pair[0] - 1:alternating_scene_frame_pair[1]].shot_id.min(),
                            vision_df[alternating_scene_frame_pair[0] - 1:alternating_scene_frame_pair[1]].shot_id.max()]
@@ -196,6 +213,10 @@ def expand_scene(alternating_scene_frame_pair, vision_df, anchor_search_threshol
 
 
 def generate_scenes(vision_df, face_df, substantial_minimum=6, anchor_search=6):
+    """
+    returns a dictionary of scenes
+    calculates and populates scene information, such as duration, characters, and cutaway shots
+    """
     alternating_pairs, pair_shot_ids = find_alternating_clusters(vision_df)
     substantial_anchor_shot_clusters, substantial_pair_shot_ids  = filter_substantial_shot_pairs(alternating_pairs, pair_shot_ids, threshold=substantial_minimum)
     alternating_scene_frame_pairs, alternating_scene_anchor_pairs = find_alternating_scenes(substantial_anchor_shot_clusters, substantial_pair_shot_ids, vision_df, face_df)

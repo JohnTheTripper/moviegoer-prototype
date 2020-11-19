@@ -11,6 +11,10 @@ from collections import Counter
 
 
 def get_primary_chars(sentence_df, subtitle_df, nlp):
+    """
+    returns a potential list of characters in the film
+    looks for names that are mentioned in subtitle dialogue, as well as names of offscreen speakers
+    """
     sentences = sentence_df['sentence'].tolist()
     chars_sub_mentions = character_subtitle_mentions(sentences, nlp)
     chars_offscreen_speakers = character_offscreen_speakers(subtitle_df)
@@ -30,7 +34,12 @@ def get_primary_chars(sentence_df, subtitle_df, nlp):
     return characters
 
 
+''' may be depreciated
 def self_intro_average_encoding(movie_choice, char_name, sentence_df, subtitle_df):
+    """
+    returns a list of facial encodings, given a character name
+    looks for self-introduction statements to find character names
+    """
     # find subtitle indices
     intro_indices = sentence_df[
         sentence_df.self_intro.str.contains(char_name, na=False, case=False)].subtitle_indices.values
@@ -84,9 +93,14 @@ def self_intro_average_encoding(movie_choice, char_name, sentence_df, subtitle_d
         average_encoding = None
 
     return average_encoding
+'''
 
 
 def generate_character_clusters(scene_dictionaries, common_count=5):
+    """
+    returns a list of list of facial encodings, grouped by similar characters
+    character faces are grouped together based in appearances in the same scene, as well as different scenes
+    """
     # search all scenes for anchor face clusters, flatten, and then generate list of most common
     anchor_face_cluster_lists = []
 
@@ -156,6 +170,10 @@ def generate_character_clusters(scene_dictionaries, common_count=5):
 
 
 def generate_characters(scene_dictionaries):
+    """
+    returns a dictionary of characters, based on scene_dictionaries
+    scene_dictionaries is used to identify scenes in the film, which are then used to cluster/group facial encodings
+    """
     character_clusters = generate_character_clusters(scene_dictionaries)
     character_dictionary_list = []
 

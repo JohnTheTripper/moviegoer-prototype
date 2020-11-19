@@ -5,6 +5,9 @@ from sklearn.cluster import AgglomerativeClustering
 
 
 def read_pickle(film):
+    """
+    returns dataframes, read from serialized pickle file
+    """
     df_object_directory = '../serialized_objects/'
     film_directory = os.path.join(df_object_directory, film)
     srt_df = pd.read_pickle(os.path.join(film_directory, 'srt_df.pkl'))
@@ -17,6 +20,9 @@ def read_pickle(film):
 
 
 def cluster_primary_faces(face_df):
+    """
+    returns face_df with primary faces clustered
+    """
     prim_char_flags = face_df.prim_char_flag.tolist()
     face_encodings = face_df.face_encodings.tolist()
 
@@ -50,6 +56,9 @@ def cluster_primary_faces(face_df):
 
 # shot cluster
 def cluster_shots(film, vision_df):
+    """
+    returns vision_df with shots clustered, and each assigned an incremental shot_id
+    """
     df_object_directory = '../serialized_objects/'
     film_directory = os.path.join(df_object_directory, film)
     vgg16_feature_list_np = np.load(os.path.join(film_directory, 'vgg16_features.npy'))

@@ -6,6 +6,10 @@ import pandas as pd
 
 
 def display_character_dialogue_context(character_face_clusters, sentence_df, nlp):
+    """
+    calculates and prints various information about dialogue attributed to a specific character
+    will be more useful as dialogue attribution improves
+    """
     character_sentences = sentence_df[
         sentence_df['implied_speaker'].isin(character_face_clusters)].sentence.tolist()
     character_doc = nlp(' '.join(character_sentences))
@@ -48,25 +52,25 @@ def display_character_dialogue_context(character_face_clusters, sentence_df, nlp
     for ng in ng_count.most_common(5):
         ng_terms.append(ng[0])
 
-    print('----------------')
-    print('Direct questions')
-    print('----------------')
+    print('------------------')
+    print('Directed Questions')         # second-person questions directed at "you"
+    print('------------------')
     for index in direct_question_indices:
         print(sent_nlp_list[index])
     print()
     print('-------------------------------------')
-    print('Possible important terms, noun groups')
+    print('Possible Important Terms, Noun Groups')
     print('-------------------------------------')
     print(ng_terms)
     print()
     print('-------------------------')
-    print('First-person declarations')
+    print('First-Person Declarations')
     print('-------------------------')
     for index in i_indices:
         print(sent_nlp_list[index])
     print()
     print('-----------------------')
-    print('Second-person addresses')
+    print('Second-Person Addresses')
     print('-----------------------')
     for index in you_indices:
         print(sent_nlp_list[index])
@@ -74,6 +78,10 @@ def display_character_dialogue_context(character_face_clusters, sentence_df, nlp
 
 
 def plot_character_filmwide_emotion(character_face_clusters, face_df):
+    """
+    plots a character's "upset" emotions (sad and angry) throughout eight portions ("sequences") of the film
+    for now, attempts to create sequences by removing the credits and dividing the film into eight equal portions
+    """
     frame_before_credits = face_df[face_df['faces_found'] > 0].tail(1).index[0]  # final frame before credits
     face_nocreds_df = face_df[0:frame_before_credits].copy()
 

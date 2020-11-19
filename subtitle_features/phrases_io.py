@@ -4,6 +4,12 @@ import spacy
 
 # self-introduction
 def self_intro_i_am(sent_doc, start_token=0):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if the proper noun introduces themselves
+    e.g. in a sentence "Nice to meet you, I'm Shaun", returns Shaun
+    may also return other words that are part of a proper noun phrase
+    e.g. in a sentence "Nice to meet you, I'm Detective Yellen.", returns Detective Yellen
+    """
     pnoun_components = []
     pnoun_flag = 0
 
@@ -26,6 +32,12 @@ def self_intro_i_am(sent_doc, start_token=0):
 
 
 def self_intro_my_name(sent_doc, start_token=0):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if the proper noun introduces themselves
+    e.g. in a sentence "Hello, my name is Jamie.", returns Jamie
+    may also return other words that are part of a proper noun phrase
+    e.g. in a sentence "Hello, my name is Inspector Brauer.", returns Inspector Brauer
+    """
     pnoun_components = []
     pnoun_flag = 0
 
@@ -43,6 +55,10 @@ def self_intro_my_name(sent_doc, start_token=0):
 
 
 def self_intro_calls_me(sent_doc, start_token=0):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if the proper noun introduces themselves
+    e.g. in a sentence "But everybody calls me John.", returns John
+    """
     pnoun_components = []
     pnoun_flag = 0
 
@@ -60,6 +76,10 @@ def self_intro_calls_me(sent_doc, start_token=0):
 
 
 def self_intro(sentence, nlp):
+    """
+    returns a potential name by checking various self-introduction phrases
+    only returns a single name, for now
+    """
     sent_doc = nlp(sentence)
 
     start_token = 0
@@ -91,6 +111,10 @@ def self_intro(sentence, nlp):
 
 # other-introduction
 def other_intro_this_is(sent_doc, start_token=0):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if someone else introduces the proper noun
+    e.g. in a sentence "I'm Jill, and this is Jane.", returns Jane
+    """
     pnoun_components = []
     pnoun_flag = 0
 
@@ -109,6 +133,10 @@ def other_intro_this_is(sent_doc, start_token=0):
 
 
 def other_intro(sentence, nlp):
+    """
+    returns a potential name by checking one other-introduction phrase (may add more later)
+    only returns a single name, for now
+    """
     sent_doc = nlp(sentence)
 
     start_token = 0
@@ -134,23 +162,39 @@ def other_intro(sentence, nlp):
 
 # direct-address
 def direct_address_start(sent_doc):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if the sentence begins addressing the proper noun
+    e.g. in a sentence "Alex, that's so dumb.", returns Alex
+    """
     if len(sent_doc) > 1:
         if sent_doc[0].pos_ == 'PROPN' and sent_doc[1].text == ",":
             return sent_doc[0].text
 
 
 def direct_address_end(sent_doc):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if the sentence ends addressing the proper noun
+    e.g. in a sentence "That so dumb, Alex.", returns Alex
+    """
     if len(sent_doc) > 2:
         if sent_doc[-3].text == ',' and sent_doc[-2].pos_ == 'PROPN' and sent_doc[-1].pos_ == 'PUNCT':
             return sent_doc[-2].text
 
 
 def direct_address_mid(sent_doc, start_token=0):
+    """
+    returns proper nouns as a string, from an NLP input sentence, if the proper noun is addressed mid-sentence
+    e.g. in a sentence "I can't believe, Alex, that you can't see how dumb that is.", returns Alex
+    """
     if sent_doc[start_token].text == ',' and sent_doc[start_token + 1].pos_ == 'PROPN' and sent_doc[start_token + 2].text == ',':
         return sent_doc[start_token + 1].text
 
 
 def direct_address(sentence, nlp):
+    """
+    returns a potential name by checking various direct-address phrases
+    only returns a single name, for now
+    """
     sent_doc = nlp(sentence)
 
     start_token = 0
@@ -183,6 +227,9 @@ def direct_address(sentence, nlp):
 
 # conversation boundaries
 def conversation_boundary(sentence):
+    """
+    searches for various conversation starters or enders and returns a phrase depending on what was found
+    """
     conversation_starters = ['how are you?', 'hi.', 'hi!', 'what can I do for you?']
     conversation_enders = ['goodbye.', 'goodbye,', 'bye,', 'bye.', 'see you.', 'see you,', 'see you later', 'see ya']
     for starter in conversation_starters:
@@ -197,6 +244,10 @@ def conversation_boundary(sentence):
 
 # profanity
 def profanity(sentence, nlp):
+    """
+    returns a count of profanity
+    useful as a measurement of emotion
+    """
     sent_doc = nlp(sentence)
     profanity_count = 0
 

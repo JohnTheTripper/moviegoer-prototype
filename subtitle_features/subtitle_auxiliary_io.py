@@ -4,6 +4,10 @@ from datetime import datetime, date, timedelta
 
 
 def character_subtitle_mentions(sentences, nlp):
+    """
+    searches for potential character names mentioned in dialogue
+    uses blacklist to avoid false positives
+    """
     people_blacklist = ['Jesus', 'Jesus Christ', 'Whoo', 'God', 'Mm', 'Dude', 'Mm-hmm', 'Huh']
 
     doc = nlp(' '.join(sentences))
@@ -18,6 +22,10 @@ def character_subtitle_mentions(sentences, nlp):
 
 
 def character_offscreen_speakers(subtitle_df):
+    """
+    searches for potential character names labeled as offscreen speakers
+    uses blacklist to avoid false positives
+    """
     speaker_blacklist = ['MAN', 'WOMAN', 'BOY', 'GIRL', 'BOTH', 'ALL']
 
     speaker_counts = subtitle_df.speaker.value_counts()
@@ -33,6 +41,9 @@ def character_offscreen_speakers(subtitle_df):
 
 
 def dialogue_breaks(subtitle_df, threshold=10):
+    """
+    searches for potential scene boundaries by identifying breaks in dialogue over a certain threshold (in seconds)
+    """
     x = 1
     delay_threshold = timedelta(seconds=threshold)
     breaks = []

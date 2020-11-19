@@ -4,6 +4,9 @@ from serialization_preprocessing_io import *
 
 
 def get_upset_percentage(face_nocreds_df):
+    """
+    returns percentage of frames that are sad or angry
+    """
     try:
         sad_percentage = face_nocreds_df.p_emotion.value_counts(normalize=True)['sad']
     except KeyError:
@@ -19,6 +22,10 @@ def get_upset_percentage(face_nocreds_df):
 
 
 def get_word_count(sentence_nocreds_df):
+    """
+    returns number of words in a list of sentences
+    for each sentence, counts number of spaces, then adds one
+    """
     space_count = 0
     sentence_list = sentence_nocreds_df.sentence.tolist()
     for sentence in sentence_list:
@@ -31,6 +38,9 @@ def get_word_count(sentence_nocreds_df):
 
 
 def get_words_per_sentence(sentence_nocreds_df):
+    """
+    returns average number of words per sentence from a list of sentences
+    """
     sentence_list = sentence_nocreds_df.sentence.tolist()
 
     word_count = get_word_count(sentence_nocreds_df)
@@ -40,6 +50,10 @@ def get_words_per_sentence(sentence_nocreds_df):
 
 
 def get_profanity_per_word(sentence_nocreds_df):
+    """
+    returns a percentage of profanity per word
+    more easily presentable in the inverse form of *word_per_profanity*, e.g. "one in 140 words is a profanity"
+    """
     word_count = get_word_count(sentence_nocreds_df)
     profanity_count = sentence_nocreds_df.profanity.sum()
 
@@ -49,6 +63,12 @@ def get_profanity_per_word(sentence_nocreds_df):
 
 
 def display_film_baseline(film):
+    """
+    calculates and prints various information about scene-level dialogue
+    attempts to remove credits from calculation by looking for the last face of the film
+    doesn't return any values - this code can form the basis of other functions
+    useful for comparing with display_scene_dialogue_context(), though some *per minute* stats don't cleanly compare
+    """
     srt_df, subtitle_df, sentence_df, vision_df, face_df = read_pickle(film)
 
     frame_before_credits = face_df[face_df['faces_found'] > 0].tail(1).index[0]  # final frame before credits
@@ -88,6 +108,10 @@ def display_film_baseline(film):
 
 
 def get_long_takes(vision_nocreds_df, duration_threshold=20):
+    """
+    returns list of frame-pairs (start and end) of long takes, shots that last longer than a threshold
+    attempts to check for adjacent shots that should be part of the long take but were assigned a separate shot cluster
+    """
     long_takes = []
     for index, value in zip(vision_nocreds_df[vision_nocreds_df['blank'].isnull()].shot_id.value_counts().index,
                             vision_nocreds_df[vision_nocreds_df['blank'].isnull()].shot_id.value_counts().values):
@@ -96,6 +120,7 @@ def get_long_takes(vision_nocreds_df, duration_threshold=20):
 
     long_take_frame_pairs = []
 
+    # check for adjacent shots that should be part of the long take by comparing brightness
     for shot_id in long_takes:
         if shot_id + 1 in long_takes:
             shot_brightness = vision_nocreds_df[vision_nocreds_df['shot_id'] == shot_id].brightness.mean()
@@ -127,14 +152,19 @@ def get_long_takes(vision_nocreds_df, duration_threshold=20):
 
 
 def get_color_shots(vision_df, primary_threshold=2, secondary_threshold=.3, brightness_minimum=35):
+    """
+    returns shot_ids which contain at least one frame that isn't RGB balanced
+    """
     color_shots_nested = []
 
+    # check for frames skewed toward a primary color
     color_shots_nested.append(vision_df[(vision_df['red'] > vision_df['brightness'] * primary_threshold) & (
                 vision_df['brightness'] >= brightness_minimum)].shot_id.tolist())
     color_shots_nested.append(vision_df[(vision_df['blue'] > vision_df['brightness'] * primary_threshold) & (
                 vision_df['brightness'] >= brightness_minimum)].shot_id.tolist())
     color_shots_nested.append(vision_df[(vision_df['green'] > vision_df['brightness'] * primary_threshold) & (
                 vision_df['brightness'] >= brightness_minimum)].shot_id.tolist())
+    # check for frames skewed toward a secondary color (because they lack one of the primary colors)
     color_shots_nested.append(vision_df[(vision_df['red'] < vision_df['brightness'] * secondary_threshold) & (
                 vision_df['brightness'] >= brightness_minimum)].shot_id.tolist())
     color_shots_nested.append(vision_df[(vision_df['blue'] < vision_df['brightness'] * secondary_threshold) & (
@@ -152,7 +182,10 @@ def get_color_shots(vision_df, primary_threshold=2, secondary_threshold=.3, brig
 
 
 def get_nonconform_aspect_ratio_shots(vision_nocreds_df):
-    aspect_ratio = vision_nocreds_df.aspect_ratio.value_counts().index[0]
+    """
+    returns shot_ids which contain at least one frame that have an aspect ratio different from the rest of the film
+    """
+    aspect_ratio = vision_nocreds_df.aspect_ratio.value_counts().index[0]   # most prevelent aspect ratio across film
 
     nonconform_aspect_ratio_shots = vision_nocreds_df[(vision_nocreds_df['aspect_ratio'] != aspect_ratio) & (vision_nocreds_df['blank'].isnull())].shot_id.tolist()
 

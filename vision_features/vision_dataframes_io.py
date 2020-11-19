@@ -6,6 +6,9 @@ import numpy as np
 
 
 def generate_vision_df(film, frame_choice):
+    """
+    returns a dataframe with computer vision information, one row per frame
+    """
     frame_numbers = []
     blanks = []
     true_aspect_ratios = []
@@ -40,6 +43,9 @@ def generate_vision_df(film, frame_choice):
 
 
 def generate_face_df(movie_choice, frame_choice):
+    """
+    returns a dataframe with face information, one row per frame
+    """
     frame_numbers = []
     face_locations = []
     face_counts = []
@@ -92,19 +98,11 @@ def generate_face_df(movie_choice, frame_choice):
 
     return face_df
 
-'''
-    primary_face_clusters = cluster_primary_faces(primary_encodings, primary_character_flags)
-
-    face_df = pd.DataFrame(list(
-        zip(frame_numbers, face_locations, face_sizes, face_counts, primary_character_flags, third_points,
-            open_mouths, primary_face_clusters)),
-        columns=['frame', 'face_locations', 'face_sizes', 'faces_found', 'prim_char_flag',
-                 'p_thirds_alignment', 'p_open_mouth', 'p_face_cluster'])
-'''
-
-
 
 def cluster_primary_faces(primary_encodings, primary_character_flags):
+    """
+    returns a list of face clusters from a list of facial encodings
+    """
     primary_encodings_np = np.array(primary_encodings)
 
     hac = AgglomerativeClustering(n_clusters=None, distance_threshold=5).fit(primary_encodings_np)

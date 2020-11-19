@@ -4,7 +4,12 @@ import sys
 sys.path.append('../unifying_features')
 from time_reference_io import *
 
+
 def generate_conversation_df(audio_file, frame_choice):
+    """
+    returns a dataframe with audio information, one row per frame
+    to be used with an audio file containing a scene's dialogue
+    """
     audible_sound = analyze_audible_sound(audio_file, plot=False)
     speaker_list = cluster_voices(audio_file, audible_sound, plot=False)
 

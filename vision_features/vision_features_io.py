@@ -2,12 +2,14 @@ import cv2
 import os
 import numpy as np
 import pytesseract
-import face_recognition
+
 
 # loading frames
 
-
 def load_frame(film, frame_number):
+    """
+    returns a frame as a cv2 image object
+    """
     frame_folder = os.path.join('../frame_per_second', film)
     img_path = frame_folder + '/' + film + '_frame_' + str(frame_number) + '.jpg'
     frame = cv2.imread(img_path)
@@ -16,6 +18,9 @@ def load_frame(film, frame_number):
 
 
 def unrow_frame(frame):
+    """
+    unrows a frame so instead of (x, y, RGB), it's (U, RGB), where U is all of the pixels of the image
+    """
     unrowed_list = []
     for y in frame:
         for pixel in y:
@@ -29,6 +34,9 @@ def unrow_frame(frame):
 # dimensions
 
 def aspect_ratio(frame):
+    """
+    returns the aspect ratio of a frame
+    """
     height = frame.shape[0]
     width = frame.shape[1]
 
@@ -36,6 +44,9 @@ def aspect_ratio(frame):
 
 
 def blank_frame(frame):
+    """
+    returns a string if the frame is entirely black or white
+    """
     brightest_pixel = max_brightness(frame)
     if frame.mean() < 3:  # threshold of 3, to be safe
         return 'black'
@@ -46,6 +57,9 @@ def blank_frame(frame):
 
 
 def center_point(frame):
+    """
+    returns the (x,y) coordinates of the frame's center point
+    """
     height = frame.shape[0]
     width = frame.shape[1]
 
@@ -57,6 +71,9 @@ def center_point(frame):
 
 
 def thirds_points(frame):
+    """
+    returns the (x,y) coordinates of the frame's four rule-of-thirds points
+    """
     height = frame.shape[0]
     width = frame.shape[1]
 
@@ -74,6 +91,10 @@ def thirds_points(frame):
 
 
 def black_row(frame, row_selection):
+    """
+    returns a flag if a row is comprised of entirely black pixels
+    useful for determining if frames have artificial aspect ratios
+    """
     total_pixels = frame.shape[1]
     black_pixels = 0
 
@@ -88,6 +109,10 @@ def black_row(frame, row_selection):
 
 
 def true_height(frame):
+    """
+    returns the true height of a frame
+    useful when frames have artificial aspect ratios
+    """
     top_row = 0
     bottom_row = frame.shape[0] - 1
     search_flag = True
@@ -109,6 +134,10 @@ def true_height(frame):
 
 
 def black_column(frame, col_selection):
+    """
+    returns a flag if a column is comprised of entirely black pixels
+    useful for determining if frames have artificial aspect ratios
+    """
     total_pixels = frame.shape[0]
     black_pixels = 0
 
@@ -123,6 +152,10 @@ def black_column(frame, col_selection):
 
 
 def true_width(frame):
+    """
+    returns the true width of a frame
+    useful when frames have artificial aspect ratios
+    """
     left_column = 0
     right_column = frame.shape[1] - 1  # list starts at 0, while .shape starts at 1
     search_flag = True
@@ -144,7 +177,10 @@ def true_width(frame):
 
 
 def true_aspect_ratio(frame):
-    if blank_frame(frame) == 'black' or blank_frame(frame) == 'white':
+    """
+    returns the true aspect ratio of a frame (if it has an artificial aspect ratio)
+    """
+    if blank_frame(frame) == 'black' or blank_frame(frame) == 'white':              # ignore blank frames
         return aspect_ratio(frame)
     return round(true_width(frame) / true_height(frame), 2)
 
@@ -152,16 +188,29 @@ def true_aspect_ratio(frame):
 # chroma and luma
 
 def mean_brightness(frame):
+    """
+    returns the mean brightness of a frame
+    grayscale conversion is more accurate
+    """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     return round(gray.mean())
 
 
 def calculate_contrast(frame):
+    """
+    returns the mean brightness of a frame
+    grayscale conversion is more accurate
+    """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     return round(gray.std())
 
 
 def max_brightness(frame):
+    """
+    returns the maximum brightness of a frame
+    useful when calculating relative brightness of other pixels
+    can be depreciated, duplicate function
+    """
     brightest_pixel = 0
     # brightest_coordinate = 0
     x = 0
@@ -180,6 +229,10 @@ def max_brightness(frame):
 
 
 def brightest_pixel_intensity(frame):
+    """
+    returns the maximum brightness of a frame
+    useful when calculating relative brightness of other pixels
+    """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = gray.flatten()
 
@@ -187,6 +240,10 @@ def brightest_pixel_intensity(frame):
 
 
 def darkest_pixel_intensity(frame):
+    """
+    returns the minimum brightness of a frame
+    useful when calculating relative brightness of other pixels
+    """
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = gray.flatten()
 
@@ -194,6 +251,10 @@ def darkest_pixel_intensity(frame):
 
 
 def remove_highlights_shadows(frame):
+    """
+    returns (unrowed) list of pixels after filtering out any highlights and shadows
+    these bright or dark spots may throw off brightness calculations
+    """
     brightest = brightest_pixel_intensity(frame)
     darkest = darkest_pixel_intensity(frame)
     unrowed = unrow_frame(frame)
@@ -219,6 +280,9 @@ def remove_highlights_shadows(frame):
 
 
 def bgr(unrowed):
+    """
+    returns (unrowed) lists of blue, green, and red intensities
+    """
     b = []
     g = []
     r = []
@@ -236,6 +300,11 @@ def bgr(unrowed):
 
 
 def dominant_color(frame):
+    """
+    returns a dominant color for a frame, if applicable
+    may be depreciated and replaced by film_details_io.get_color_shots()
+    suffers from long processing time
+    """
     if frame.mean() < 50:
         return None
 
@@ -254,12 +323,14 @@ def dominant_color(frame):
     r_mean = r.mean()
     primary_threshold = .5
     secondary_threshold = .1
+    # check for frames skewed toward a primary color
     if b_mean / (mid_pixels_mean * 3) > primary_threshold:
         return 'blue'
     elif g_mean / (mid_pixels_mean * 3) > primary_threshold:
         return 'green'
     elif r_mean / (mid_pixels_mean * 3) > primary_threshold:
         return 'red'
+    # check for frames skewed toward a secondary color (because they lack one of the primary colors)
     elif b_mean / (mid_pixels_mean * 3) < secondary_threshold:
         return 'yellow'
     elif g_mean / (mid_pixels_mean * 3) < secondary_threshold:
@@ -273,6 +344,9 @@ def dominant_color(frame):
 # onscreen text
 
 def onscreen_text(frame):
+    """
+    returns a flag if text is found onscreen
+    """
     text = pytesseract.image_to_string(frame)
     if len(text) != 0:
         return True

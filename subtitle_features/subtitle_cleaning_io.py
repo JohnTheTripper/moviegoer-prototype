@@ -2,6 +2,12 @@ import spacy
 
 
 def concat_sep_lines(text):
+    """
+    returns one or two lines of subtitles
+    if one line of subtitle, return the original text
+    if two lines of subtitles spoken by one character, remove the line break and return the subtitle
+    if two lines of subtitles spoken by two characters, break them into separate subtitles
+    """
     newline = text.find('\n')
     if newline == -1:                                       # one-liner
         return text, 0
@@ -15,6 +21,9 @@ def concat_sep_lines(text):
 
 
 def generate_single_lines(subs):
+    """
+    returns a list of subtitle lines after concatenation and separation
+    """
     single_lines = []
     for sub_object in subs:
         text = sub_object.text
@@ -25,15 +34,20 @@ def generate_single_lines(subs):
     return single_lines
 
 
-def music_clean(line):                      # convert to clean only, and function that detects any music note
+'''
+def music_clean(line):                      # replicated below with separate find and clean functionality, depreciated
     entire_line_music = 0
     if line[:1] == '♪' and line[-1:] == '♪':
         entire_line_music = 1
         line = ''
     return entire_line_music, line
+'''
 
 
 def find_music(line):
+    """
+    returns a flag denoting if music is present
+    """
     if '♪' in line:
         return 1
     else:
@@ -41,22 +55,30 @@ def find_music(line):
 
 
 def clean_music(line):
+    """
+    cleans line by removing all content if music is present
+    """
     if '♪' in line:
         return ''
     else:
         return line
 
 
-def parenthetical_clean(line):             # replicated below in content and clean functionality, will be depreciated
+'''
+def parenthetical_clean(line):             # replicated below with separate find and clean functionality, depreciated
     entire_line_parenthetical = 0
     if line[:1] == '(' and line[-1:] == ')':
         # entire_line_parenthetical = line[1:-1]
         entire_line_parenthetical = line
         line = ''
     return entire_line_parenthetical, line
+'''
 
 
 def find_parenthetical(line):
+    """
+    returns parenthetical content, in both forms of brackets: () and []
+    """
     parenthetical_content = None
 
     paren_open_find = line.find('(')
@@ -73,6 +95,9 @@ def find_parenthetical(line):
 
 
 def find_el_parenthetical(line):
+    """
+    returns flag denoting if the entire line is parenthetical content, in both forms of brackets: () and []
+    """
     entire_line_parenthetical = 0
     if line[:1] == '(' and line[-1:] == ')':
         entire_line_parenthetical = 1
@@ -82,6 +107,9 @@ def find_el_parenthetical(line):
 
 
 def clean_parenthetical(line):
+    """
+    cleans line content by removing parenthetical content, in both forms of brackets: () and []
+    """
     paren_open_find = line.find('(')
     if paren_open_find != -1:
         paren_close_find = line.find(')')
@@ -94,7 +122,10 @@ def clean_parenthetical(line):
     return line
 
 
-def italic_clean(line):                         # same as parentheses function conversion
+def italic_clean(line):
+    """
+    cleans line content by removing italic content, and also returns a flag denoting if the entire line is italics
+    """
     entire_line_italic = 0
     if line[:3] == '<i>' and line[-4:] == '</i>':
         entire_line_italic = 1
@@ -103,7 +134,11 @@ def italic_clean(line):                         # same as parentheses function c
     return entire_line_italic, line
 
 
-def find_italic(line):                  # refactor to account for entire line, or multiple sets of italics
+def find_italic(line):
+    """
+    returns content in italics if the entire line is italics
+    will be refactored to differentiate between entire line, and portions, as well as multiple sets of italics
+    """
     entire_line_italic = None
     if line[:3] == '<i>' and line[-4:] == '</i>':
         entire_line_italic = line[3:-4]
@@ -111,6 +146,9 @@ def find_italic(line):                  # refactor to account for entire line, o
 
 
 def find_el_italic(line):
+    """
+    returns flag denoting if entire line is in italics
+    """
     if line[:3] == '<i>' and line[-4:] == '</i>':
         return 1
     else:
@@ -118,8 +156,12 @@ def find_el_italic(line):
 
 
 def clean_italic(line):
+    """
+    cleans line by removing italic tags
+    """
     line = line.replace('<i>', '').replace('</i>', '')
     return line
+
 
 '''
 def speaker_clean(line):                    # replicated below without clean, will be depreciated
@@ -131,7 +173,11 @@ def speaker_clean(line):                    # replicated below without clean, wi
     return speaker, line
 '''
 
+
 def find_speaker(line):
+    """
+    returns offscreen speaker name, if labeled
+    """
     colon_find = line.find(':')
     if colon_find != -1 and line[0:colon_find].isupper():
         speaker = line[0:colon_find]
@@ -141,10 +187,14 @@ def find_speaker(line):
 
 
 def clean_speaker(line):
+    """
+    cleans offscreen speaker name, if labeled
+    """
     colon_find = line.find(':')
     if colon_find != -1 and line[0:colon_find].isupper():
         line = line[colon_find + 2:]
     return line
+
 
 '''
 def laugh_clean(line):                       # replicated below without clean, will be depreciated
@@ -157,13 +207,18 @@ def laugh_clean(line):                       # replicated below without clean, w
     return laugh_found, line
 '''
 
+
 def find_laugh(line):
+    """
+    returns flag denoting if laughter found
+    """
     laugh_found = 0
     laugh_strings = ['laughing', 'laughs', 'laughter', 'chuckles', 'chuckling', 'giggles', 'giggling']
     for laugh in laugh_strings:
         if laugh in line.lower():
             laugh_found = 1
     return laugh_found
+
 
 '''
 def clean_subs(subs):                   # replicated below, may be depreciated
@@ -218,7 +273,11 @@ def clean_and_flag_subs(subs):                      # depreciate
     return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, entire_line_parentheticals
 '''
 
+
 def clean_line(line):
+    """
+    returns cleaned line
+    """
     line = clean_parenthetical(line)
     line = clean_italic(line)
     line = clean_music(line)
@@ -229,6 +288,9 @@ def clean_line(line):
 
 
 def remove_blanks(cleaned_lines):
+    """
+    removes blank lines from list of cleaned lines
+    """
     blanks_removed = []
 
     for line in cleaned_lines:
@@ -239,6 +301,9 @@ def remove_blanks(cleaned_lines):
 
 
 def partition_sentences(input_lines, nlp):
+    """
+    returns a list of sentences based on input subtitle lines
+    """
     doc = nlp(' '.join(input_lines))
     sentences = []
     for sent in doc.sents:
@@ -248,6 +313,9 @@ def partition_sentences(input_lines, nlp):
 
 
 def clean_midsentence_interjection(line):
+    """
+    cleans midsentence interjections
+    """
     interjection_strings = [', uh,', ', um', ', you know,']
     for interjection in interjection_strings:
         found_interjection = line.find(interjection)
@@ -257,6 +325,9 @@ def clean_midsentence_interjection(line):
 
 
 def find_midsentence_interjection(line):
+    """
+    returns a flag denoting if a midsentence interjection was found
+    """
     interjection_strings = [', uh,', ', um', ', you know,']
     for interjection in interjection_strings:
         found_interjection = line.find(interjection)
