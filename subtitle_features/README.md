@@ -6,15 +6,19 @@ With a film's subtitles, we can extract the ground-truth transcription of the sp
 
 Subtitles describe both dialogue and non-dialogue utterances from characters.
 
-## Current Scope: Local Features
-Right now, we'll see what local features we can unlock, such as analyzing speech and descriptions of sound effects. In the future, we'll see how we can use the subtitle text to interpret the film's plot.
-
 ## Repository Files
 The directory contains the following files:
 
 1. *subtitle_cleaning.ipynb* - parses and cleans the subtitle files into an NLP-friendly format
-2. *subtitle_cleaning_io.py* - functions for automatically cleaning subtitles
-3. *subtitle_nlp.ipynb* - NLP-based analysis of subtitle text
+2. *subtitle_nlp.ipynb* - NLP-based analysis of subtitle text
+3. *subtitle_dataframes.ipynb* - creating three types of dataframes of subtitle features
+4. *character_identification.ipynb* - identifying characters based on dialogue (e.g. "Nice to meet you, I'm Jim.")
+5. *word_importance.ipynb* - identifying the words most important to scenes
+6. *subtitle_auxiliary.ipynb* - other subtitle-related tricks for finding film information
+7. *subtitle_cleaning_io.py* - functions for automatically cleaning subtitles
+8. *subtitle_dataframes_io.py* - functions for creating subtitle-related dataframes
+9. *subtitle_auxiliary_io.py* - functions for film-level subtitle information
+10. *phrases_io.py* - functions for identifying specific words and phrases
 
 ## Subtitle Format
 Subtitle files can be extracted from a movie in the form of a .srt file. These are basically just text files, but with very strict formatting. Each subtitle has a unique ID, a start and end time (indicating that this should be displayed at HH:MM:SS:MIL and end at HH:MM:SS:MIL), and one or two lines for the actual subtitle text to be displayed.

@@ -10,6 +10,9 @@ The directory contains the following files:
 
 1. *voice_tone.ipynb* - basic visualizations and voice emotional analysis using a pre-trained model
 2. *score.ipynb* - tempo, scale/chord identification, and diegesis testing
+3. *sound_effects.ipynb* - sound effects
+4. *conversations_io.py* - functions for analyzing conversations
+5. *audio_dataframes_io.py* - functions for creating audio-related dataframes
 
 ## Voice — Visualization and Tone Analysis
 Audio analysis is heavily rooted in signal processing – these concepts should be familiar to electrical engineers. To process audio, we’ll have to convert audio files into usable representations in both the time domain and frequency domain. Luckily, we can use the librosa library. Created by LabROSA at Columbia University, this library contains all sorts of tools for audio processing.
