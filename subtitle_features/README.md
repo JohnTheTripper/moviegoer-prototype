@@ -14,11 +14,13 @@ The directory contains the following files:
 3. *subtitle_dataframes.ipynb* - creating three types of dataframes of subtitle features
 4. *character_identification.ipynb* - identifying characters based on dialogue (e.g. "Nice to meet you, I'm Jim.")
 5. *word_importance.ipynb* - identifying the words most important to scenes
-6. *subtitle_auxiliary.ipynb* - other subtitle-related tricks for finding film information
-7. *subtitle_cleaning_io.py* - functions for automatically cleaning subtitles
-8. *subtitle_dataframes_io.py* - functions for creating subtitle-related dataframes
-9. *subtitle_auxiliary_io.py* - functions for film-level subtitle information
-10. *phrases_io.py* - functions for identifying specific words and phrases
+6. *charged_words.ipynb* - identifies emotionally-charged words, like profanity, to quantify emotion
+7. *location_context.ipynb* - uses dialogue and parenthetical descriptions to identify the location or context of a scene
+8. *subtitle_auxiliary.ipynb* - other subtitle-related tricks for finding film information
+9. *subtitle_cleaning_io.py* - functions for automatically cleaning subtitles
+10. *subtitle_dataframes_io.py* - functions for creating subtitle-related dataframes
+11. *subtitle_auxiliary_io.py* - functions for film-level subtitle information
+12. *phrases_io.py* - functions for identifying specific words and phrases
 
 ## Subtitle Format
 Subtitle files can be extracted from a movie in the form of a .srt file. These are basically just text files, but with very strict formatting. Each subtitle has a unique ID, a start and end time (indicating that this should be displayed at HH:MM:SS:MIL and end at HH:MM:SS:MIL), and one or two lines for the actual subtitle text to be displayed.
