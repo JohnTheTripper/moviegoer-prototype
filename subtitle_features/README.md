@@ -14,7 +14,7 @@ The directory contains the following files:
 3. *subtitle_dataframes.ipynb* - creating three types of dataframes of subtitle features
 4. *character_identification.ipynb* - identifying characters based on dialogue (e.g. "Nice to meet you, I'm Jim.")
 5. *word_importance.ipynb* - identifying the words most important to scenes
-6. *charged_words.ipynb* - identifies emotionally-charged words, like profanity, to quantify emotion
+6. *conversation_mood.ipynb* - quantifying the mood and vibe of a conversation, like level of profanity, or conversation speed
 7. *location_context.ipynb* - uses dialogue and parenthetical descriptions to identify the location or context of a scene
 8. *subtitle_auxiliary.ipynb* - other subtitle-related tricks for finding film information
 9. *subtitle_cleaning_io.py* - functions for automatically cleaning subtitles
