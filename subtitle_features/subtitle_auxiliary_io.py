@@ -3,7 +3,7 @@ from collections import Counter
 from datetime import datetime, date, timedelta
 
 
-def character_subtitle_mentions(sentences, nlp):
+def character_subtitle_mentions(sentences, nlp, num_chars=10):
     """
     searches for potential character names mentioned in dialogue
     uses blacklist to avoid false positives
@@ -17,11 +17,15 @@ def character_subtitle_mentions(sentences, nlp):
         if ent.label_ == 'PERSON' and ent.text not in people_blacklist:
             people.append(ent.text)
     count = Counter(people)
+    char_count = count.most_common(num_chars)
 
-    return count.most_common(10)
+    characters = []
+    for character in char_count:
+        characters.append(character[0])
+    return characters
 
 
-def character_offscreen_speakers(subtitle_df):
+def character_offscreen_speakers(subtitle_df, num_chars=10):
     """
     searches for potential character names labeled as offscreen speakers
     uses blacklist to avoid false positives
@@ -32,12 +36,17 @@ def character_offscreen_speakers(subtitle_df):
     speakers = []
 
     x = 0
-    while x < len(speaker_counts):
-        if speaker_counts.index[x] not in speaker_blacklist:
-            speakers.append((speaker_counts.index[x], speaker_counts[x]))
-        x += 1
+    y = 0
+    if len(speaker_counts) == 0:
+        return None
+    else:
+        while y < num_chars:
+            if speaker_counts.index[x] not in speaker_blacklist:
+                speakers.append(speaker_counts.index[x])
+                y += 1
+            x += 1
 
-    return speakers[0:10]
+        return speakers
 
 
 def dialogue_breaks(subtitle_df, threshold=10):
