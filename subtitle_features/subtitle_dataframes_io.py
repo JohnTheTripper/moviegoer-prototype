@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 from subtitle_cleaning_io import *
+from subtitle_auxiliary_io import *
 from phrases_io import *
 sys.path.append('../unifying_features')
 from time_reference_io import *
@@ -180,3 +181,33 @@ def generate_speakers(sentence_df, subtitle_df, face_df):
     sentence_df['implied_speaker'] = implied_speakers
 
     return sentence_df
+
+
+def add_paren_offscreen_speaker(subtitle_df, sentence_df, nlp):
+    """
+    returns subtitle_df with updated speaker column
+    originally, speaker column only identified speakers in this form `ADAM: No way` but not this form: `[Adam] No way`
+    generates a character list using character_subtitle_mentions() and compares parentheticals against this list
+    """
+    speaker_amended = []
+    sentences = sentence_df.sentence.tolist()
+    mentioned_characters = character_subtitle_mentions(sentences, nlp)
+    generic_characters = ['man', 'woman', 'boy', 'girl', 'both', 'all']
+
+    paren_list = subtitle_df.parenthetical.tolist()
+    speaker_list = subtitle_df.speaker.tolist()
+
+    for paren, speaker in zip(paren_list, speaker_list):
+        if speaker:
+            speaker_amended.append(speaker)
+        elif paren:
+            if paren in mentioned_characters or paren in generic_characters:
+                speaker_amended.append(paren)
+            else:
+                speaker_amended.append(None)
+        else:
+            speaker_amended.append(None)
+
+    subtitle_df['speaker'] = speaker_amended
+
+    return subtitle_df
