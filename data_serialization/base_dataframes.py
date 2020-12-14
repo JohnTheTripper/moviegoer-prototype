@@ -44,7 +44,7 @@ sentences = partition_sentences(remove_blanks(subtitle_df['cleaned_text'].tolist
 subtitle_indices = tie_sentence_subtitle_indices(sentences, subtitle_df)
 sentence_df = pd.DataFrame(list(zip(sentences, subtitle_indices)), columns=['sentence', 'subtitle_indices'])
 sentence_df = generate_sentence_features(sentence_df, nlp)
-
+subtitle_df = add_paren_offscreen_speaker(subtitle_df, sentence_df, nlp)
 
 srt_df.to_pickle(os.path.join(film_directory, 'srt_df.pkl'))
 subtitle_df.to_pickle(os.path.join(film_directory, 'subtitle_df.pkl'))
