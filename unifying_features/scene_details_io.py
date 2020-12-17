@@ -3,6 +3,8 @@ from time_reference_io import *
 from film_details_io import *
 from collections import Counter
 import pandas as pd
+sys.path.append('../subtitle_features')
+from subtitle_dataframes_io import *
 
 
 def display_scene_dialogue_context(scene_dict, subtitle_df, sentence_df, nlp):
@@ -182,19 +184,7 @@ def generate_scene_participants(scene_dict, subtitle_df, sentence_df):
     returns a best-guess at names of possible scene participants
     looks for sentences with a direct-address ('Many thanks, Adam.') or offscreen speaker label
     """
-    scene_start_time = frame_to_time(scene_dict['first_frame'])
-    scene_end_time = frame_to_time(scene_dict['last_frame'] + 1) # add 1 second; scene ends one second after this frame is onscreen
-    scene_subtitle_df = subtitle_df[
-        (subtitle_df['end_time'] > scene_start_time) & (subtitle_df['start_time'] < scene_end_time)].copy()
-
-    scene_sentence_indices = []
-    x = 0
-    for sub_index_list in sentence_df.subtitle_indices.values:
-        for sub_index in sub_index_list:
-            if sub_index in scene_subtitle_df.index.values:
-                scene_sentence_indices.append(x)
-        x += 1
-    scene_sentence_df = sentence_df[scene_sentence_indices[0]: scene_sentence_indices[-1] + 1]
+    scene_subtitle_df, scene_sentence_df = generate_scene_sub_sent_df(scene_dict, subtitle_df, sentence_df)
 
     scene_participants = []
     for name in scene_sentence_df.direct_address.value_counts().index:

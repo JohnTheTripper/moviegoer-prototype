@@ -211,3 +211,25 @@ def add_paren_offscreen_speaker(subtitle_df, sentence_df, nlp):
     subtitle_df['speaker'] = speaker_amended
 
     return subtitle_df
+
+
+def generate_scene_sub_sent_df(scene_dict, subtitle_df, sentence_df):
+    """
+    returns subtitle_df and sentence_df at the scene level, according to a scene dictionary's start and end frames
+    """
+    scene_start_time = frame_to_time(scene_dict['first_frame'])
+    scene_end_time = frame_to_time(
+        scene_dict['last_frame'] + 1)  # add 1 second; scene ends one second after this frame is onscreen
+    scene_subtitle_df = subtitle_df[
+        (subtitle_df['end_time'] > scene_start_time) & (subtitle_df['start_time'] < scene_end_time)].copy()
+
+    scene_sentence_indices = []
+    x = 0
+    for sub_index_list in sentence_df.subtitle_indices.values:
+        for sub_index in sub_index_list:
+            if sub_index in scene_subtitle_df.index.values:
+                scene_sentence_indices.append(x)
+        x += 1
+    scene_sentence_df = sentence_df[scene_sentence_indices[0]: scene_sentence_indices[-1] + 1]
+
+    return scene_subtitle_df, scene_sentence_df
