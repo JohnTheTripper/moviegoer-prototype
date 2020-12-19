@@ -16,7 +16,14 @@ Though portions of this project will be heavily reliant on pre-trained models an
 ## Why Movies?
 Movies are chronologically linear, with clear cause-and-effect. Characters are established, emotional experiences happen to them, and they change. Consider a small-scale example: we see a character smiling, and two seconds later he’s frowning. What happened in those two seconds? Someone has said to him “I hate you”. We recognize this specific piece of dialogue is the antecedent, or stimulus to his emotional change.
 
-For more background on the data I hope to extract, see this post: [The Case for Teaching Emotion to AI by Having Them Watch Movies](https://towardsdatascience.com/moviegoer-the-case-for-teaching-emotion-to-ai-by-having-them-watch-movies-b2a7682edb1d)
+See the three-part blog series on background information on why movies are the ultimate dataset of emotional knowledge:
+
+[The Case for Teaching Emotion to AI by Having Them Watch Movies](https://towardsdatascience.com/moviegoer-the-case-for-teaching-emotion-to-ai-by-having-them-watch-movies-b2a7682edb1d)
+
+[Prototype in Action: Turning Movies into Emotional Data](https://towardsdatascience.com/moviegoer-prototype-in-action-turning-movies-into-emotional-data-480b5a3497c8)
+
+[5 Reasons Why Cinema is the Perfect Dataset of Emotional and Anthropological Knowledge](https://towardsdatascience.com/moviegoer-5-reasons-why-cinema-is-the-perfect-dataset-of-emotional-and-anthropological-knowledge-db8b0aa96ff7)
+
 
 # Four Categories of Comprehension
 Continued progress has helped clarify the overall goals of the project — we’ve identified four broad categories of knowledge that Moviegoer must identify and recognize. These categories aren’t tied to any specific aspect of the tech stack, and advances in one category may support another. Much like a human viewer, a machine must be able to parse four categories of comprehension to “watch a movie”: film structure; characters; plot and events; and style features.
