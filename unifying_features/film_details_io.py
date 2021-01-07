@@ -176,7 +176,7 @@ def get_color_shots(vision_df, primary_threshold=2, secondary_threshold=.3, brig
     for shot_id_list in color_shots_nested:
         for shot_id in shot_id_list:
             color_shots.append(shot_id)
-    color_shots = list(set(color_shots))
+    color_shots = list(sorted(set(color_shots)))
 
     return color_shots
 
