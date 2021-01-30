@@ -8,6 +8,9 @@ audio_processing/
 extracted_audio/
 serialized_objects/
 filtered_data/
+modeling/
+training_checkpoints/
+generated_data/
 
 # Saved Models
 saved_models/
