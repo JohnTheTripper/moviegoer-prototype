@@ -34,3 +34,18 @@ def filter_primary_character(film):
         copyfile(source_img_path, dest_img_path)
 
     print('Moved', len(prim_large_indices), 'Positive frames and', len(neg_prim_large_indices), 'Negative frames.')
+
+
+def write_all_sentences(film):
+    srt_df, subtitle_df, sentence_df, vision_df, face_df = read_pickle(film)
+    sentences = sentence_df.sentence.tolist()
+
+    output_file = open('../filtered_data/script/all_script.txt', 'a')
+
+    for sent in sentences:
+        output_file.write(sent)
+        output_file.write('\n')
+
+    output_file.close()
+
+    print('Wrote', len(sentences), 'sentences.')
