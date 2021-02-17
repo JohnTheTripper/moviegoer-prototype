@@ -8,29 +8,29 @@ from subtitle_dataframes_io import *
 
 
 def generate_scene_level_dfs(scene_dict, vision_df, face_df, subtitle_df, sentence_df):
-    scene_vision_df = vision_df[scene_dict['first_frame'] - 1:scene_dict['last_frame']]
-    scene_face_df = face_df[scene_dict['first_frame'] - 1:scene_dict['last_frame']]
+    vision_scene_df = vision_df[scene_dict['first_frame'] - 1:scene_dict['last_frame']]
+    face_scene_df = face_df[scene_dict['first_frame'] - 1:scene_dict['last_frame']]
     scene_start_time = frame_to_time(scene_dict['first_frame'])
     scene_end_time = frame_to_time(
         scene_dict['last_frame'] + 1)  # add 1 second; scene ends one second after this frame is onscreen
-    scene_subtitle_df = subtitle_df[
+    subtitle_scene_df = subtitle_df[
         (subtitle_df['end_time'] > scene_start_time) & (subtitle_df['start_time'] < scene_end_time)].copy()
 
     scene_sentence_indices = []
     x = 0
     for sub_index_list in sentence_df.subtitle_indices.values:
         for sub_index in sub_index_list:
-            if sub_index in scene_subtitle_df.index.values:
+            if sub_index in subtitle_scene_df.index.values:
                 scene_sentence_indices.append(x)
         x += 1
-    scene_sentence_df = sentence_df[scene_sentence_indices[0]: scene_sentence_indices[-1] + 1]
+    sentence_scene_df = sentence_df[scene_sentence_indices[0]: scene_sentence_indices[-1] + 1]
 
-    return scene_vision_df, scene_face_df, scene_subtitle_df, scene_sentence_df
+    return vision_scene_df, face_scene_df, subtitle_scene_df, sentence_scene_df
 
 
-def get_scene_cadence(scene_vision_df, scene_subtitle_df):
-    scene_duration = len(scene_vision_df)
-    cadence = len(scene_subtitle_df) / (scene_duration / 60)
+def get_scene_cadence(vision_scene_df, subtitle_scene_df):
+    scene_duration = len(vision_scene_df)
+    cadence = len(subtitle_scene_df) / (scene_duration / 60)
 
     if round(cadence) >= 35:
         print('This scene has a fast cadence, with a conversation speed of', round(cadence), 'sentences per minute.')
@@ -42,16 +42,16 @@ def get_scene_cadence(scene_vision_df, scene_subtitle_df):
     return cadence
 
 
-def get_scene_ppw(scene_sentence_df):
+def get_scene_ppw(sentence_scene_df):
     space_count = 0
-    sentence_list = scene_sentence_df.sentence.tolist()
+    sentence_list = sentence_scene_df.sentence.tolist()
     for sentence in sentence_list:
         for character in sentence:
             if character.isspace():
                 space_count += 1
 
     word_count = space_count + len(sentence_list)
-    profanity_count = scene_sentence_df.profanity.sum()
+    profanity_count = sentence_scene_df.profanity.sum()
 
     profanity_per_word = profanity_count / word_count
 
@@ -63,12 +63,12 @@ def get_scene_ppw(scene_sentence_df):
     return profanity_per_word
 
 
-def display_scene_important_phrases(sentence_df, scene_sentence_df, nlp):
+def display_scene_important_phrases(sentence_df, sentence_scene_df, nlp):
     # tf_idf data preparation
     film_doc_df = sentence_df.copy()
-    film_doc_df.drop(range(scene_sentence_df.index.start, scene_sentence_df.index.stop), inplace=True)
+    film_doc_df.drop(range(sentence_scene_df.index.start, sentence_scene_df.index.stop), inplace=True)
     film_doc = film_doc_df.sentence.tolist()
-    scene_doc = scene_sentence_df.sentence.tolist()
+    scene_doc = sentence_scene_df.sentence.tolist()
     scene_doc_joined = (' '.join(scene_doc))
     film_doc_joined = (' '.join(film_doc))
     film_scene_doc = [scene_doc_joined, film_doc_joined]
@@ -81,7 +81,7 @@ def display_scene_important_phrases(sentence_df, scene_sentence_df, nlp):
     tf_idf_terms = list(tf_idf_df.head(5).index)
 
     # nlp prep
-    scene_sentence_doc = nlp((' '.join(scene_sentence_df.sentence.tolist())))
+    scene_sentence_doc = nlp((' '.join(sentence_scene_df.sentence.tolist())))
 
     noun_groups = []
     for group in scene_sentence_doc.noun_chunks:
@@ -104,9 +104,9 @@ def display_scene_important_phrases(sentence_df, scene_sentence_df, nlp):
     print(ng_terms)
 
 
-def display_scene_important_sentences(scene_sentence_df, nlp):
+def display_scene_important_sentences(sentence_scene_df, nlp):
     # nlp prep
-    scene_sentence_doc = nlp((' '.join(scene_sentence_df.sentence.tolist())))
+    scene_sentence_doc = nlp((' '.join(sentence_scene_df.sentence.tolist())))
     sent_nlp_list = list(scene_sentence_doc.sents)
 
     i_indices = []
@@ -158,8 +158,8 @@ def display_scene_important_sentences(scene_sentence_df, nlp):
         print(sent_nlp_list[index])
 
 
-def display_scene_start_end(scene_sentence_df):
-    scene_sentences = scene_sentence_df.sentence.tolist()
+def display_scene_start_end(sentence_scene_df):
+    scene_sentences = sentence_scene_df.sentence.tolist()
     print('-------------------------------')
     print('Icebreaker (Conversation Start)')            # first three sentences of scene
     print('-------------------------------')
@@ -176,7 +176,7 @@ def display_scene_start_end(scene_sentence_df):
     print(scene_sentences[-1])
 
 
-def display_scene_emotions(scene_dict, scene_face_df):
+def display_scene_emotions(scene_dict, face_scene_df):
     """
     prints the primary emotion for each of the two anchor characters
     primary emotion is each character's most common emotion in each frame in which they appear
@@ -188,26 +188,26 @@ def display_scene_emotions(scene_dict, scene_face_df):
     right_face_clusters = [scene_dict['right_anchor_face_cluster']]
     for matching_cluster in scene_dict['matching_right_face_clusters']:
         right_face_clusters.append(matching_cluster)
-    left_emotion_index = scene_face_df[scene_face_df.p_face_cluster.isin(left_face_clusters)].p_emotion.value_counts(normalize=True).index[0]
-    left_emotion_percentage = scene_face_df[scene_face_df.p_face_cluster.isin(left_face_clusters)].p_emotion.value_counts(normalize=True).values[0]
+    left_emotion_index = face_scene_df[face_scene_df.p_face_cluster.isin(left_face_clusters)].p_emotion.value_counts(normalize=True).index[0]
+    left_emotion_percentage = face_scene_df[face_scene_df.p_face_cluster.isin(left_face_clusters)].p_emotion.value_counts(normalize=True).values[0]
     print('Left character, with face clusters', left_face_clusters, 'has the primary emotion:', left_emotion_index + ', in ' + '{:.0%}'.format(left_emotion_percentage) + ' of frames')
-    right_emotion_index = scene_face_df[scene_face_df.p_face_cluster.isin(right_face_clusters)].p_emotion.value_counts(normalize=True).index[0]
-    right_emotion_percentage = scene_face_df[scene_face_df.p_face_cluster.isin(right_face_clusters)].p_emotion.value_counts(normalize=True).values[0]
+    right_emotion_index = face_scene_df[face_scene_df.p_face_cluster.isin(right_face_clusters)].p_emotion.value_counts(normalize=True).index[0]
+    right_emotion_percentage = face_scene_df[face_scene_df.p_face_cluster.isin(right_face_clusters)].p_emotion.value_counts(normalize=True).values[0]
     print('Right character, with face clusters', right_face_clusters, 'has the primary emotion:', right_emotion_index +
           ', in ' + '{:.0%}'.format(right_emotion_percentage) + ' of frames')
 
 
-def generate_scene_participants(scene_subtitle_df, scene_sentence_df):
+def generate_scene_participants(subtitle_scene_df, sentence_scene_df):
     """
     returns a best-guess at names of possible scene participants
     looks for sentences with a direct-address ('Many thanks, Adam.') or offscreen speaker label
     """
     scene_participants = []
-    for name in scene_sentence_df.direct_address.value_counts().index:
+    for name in sentence_scene_df.direct_address.value_counts().index:
         if name[0].isupper():
             scene_participants.append(name.lower())
 
-    for name in scene_subtitle_df.speaker.value_counts().index:
+    for name in subtitle_scene_df.speaker.value_counts().index:
         scene_participants.append(name.lower())
 
     scene_participants = list(set(scene_participants))
