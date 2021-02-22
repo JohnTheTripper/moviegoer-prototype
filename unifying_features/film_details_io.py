@@ -3,6 +3,14 @@ sys.path.append('../data_serialization')
 from serialization_preprocessing_io import *
 
 
+def generate_nocreds_dfs(vision_df, face_df):
+    frame_before_credits = face_df[face_df['faces_found'] > 0].tail(1).index[0]  # final frame before credits
+    vision_nocreds_df = vision_df[0:frame_before_credits].copy()
+    face_nocreds_df = face_df[0:frame_before_credits].copy()
+
+    return vision_nocreds_df, face_nocreds_df
+
+
 def get_upset_percentage(face_nocreds_df):
     """
     returns percentage of frames that are sad or angry
@@ -21,13 +29,13 @@ def get_upset_percentage(face_nocreds_df):
     return upset_emotion_percentage
 
 
-def get_word_count(sentence_nocreds_df):
+def get_word_count(sentence_df):
     """
     returns number of words in a list of sentences
     for each sentence, counts number of spaces, then adds one
     """
     space_count = 0
-    sentence_list = sentence_nocreds_df.sentence.tolist()
+    sentence_list = sentence_df.sentence.tolist()
     for sentence in sentence_list:
         for character in sentence:
             if character.isspace():
@@ -37,27 +45,32 @@ def get_word_count(sentence_nocreds_df):
     return word_count
 
 
-def get_words_per_sentence(sentence_nocreds_df):
+def get_words_per_sentence(sentence_df):
     """
     returns average number of words per sentence from a list of sentences
     """
-    sentence_list = sentence_nocreds_df.sentence.tolist()
+    sentence_list = sentence_df.sentence.tolist()
 
-    word_count = get_word_count(sentence_nocreds_df)
+    word_count = get_word_count(sentence_df)
     words_per_sentence = word_count / len(sentence_list)
 
     return words_per_sentence
 
 
-def get_profanity_per_word(sentence_nocreds_df):
+def get_profanity_per_word(sentence_df):
     """
     returns a percentage of profanity per word
     more easily presentable in the inverse form of *word_per_profanity*, e.g. "one in 140 words is a profanity"
     """
-    word_count = get_word_count(sentence_nocreds_df)
-    profanity_count = sentence_nocreds_df.profanity.sum()
+    word_count = get_word_count(sentence_df)
 
-    profanity_per_word = profanity_count/word_count
+    profanity_count = sentence_df.profanity.sum()
+    profanity_per_word = profanity_count / word_count
+
+    if profanity_per_word == 0:
+        print('The film contains no profanity.')
+    else:
+        print('One in', round(1 / profanity_per_word), 'words is a profanity.')
 
     return profanity_per_word
 
@@ -71,15 +84,11 @@ def display_film_baseline(film):
     """
     srt_df, subtitle_df, sentence_df, vision_df, face_df = read_pickle(film)
 
-    frame_before_credits = face_df[face_df['faces_found'] > 0].tail(1).index[0]  # final frame before credits
-    vision_nocreds_df = vision_df[0:frame_before_credits].copy()
-    face_nocreds_df = face_df[0:frame_before_credits].copy()
-    subtitle_nocreds_df = subtitle_df[0:frame_before_credits].copy()
-    sentence_nocreds_df = sentence_df[0:frame_before_credits].copy()
+    vision_nocreds_df, face_nocreds_df = generate_nocreds_dfs(vision_df, face_df)
 
     upset_emotion_percentage = get_upset_percentage(face_nocreds_df)
-    words_per_sentence = get_words_per_sentence(sentence_nocreds_df)
-    profanity_per_word = get_profanity_per_word(sentence_nocreds_df)
+    words_per_sentence = get_words_per_sentence(sentence_df)
+    profanity_per_word = get_profanity_per_word(sentence_df)
 
     print('---------')
     print('Technical')
@@ -92,7 +101,7 @@ def display_film_baseline(film):
     print('--------')
     print('Dialogue')
     print('--------')
-    print('Spoken sentences per minute:', round(len(sentence_nocreds_df) / (len(vision_nocreds_df) / 60)))
+    print('Spoken sentences per minute:', round(len(sentence_df) / (len(vision_nocreds_df) / 60)))
     print('Words per sentence:', round(words_per_sentence, 2))
     print()
     print('-------')
@@ -100,10 +109,8 @@ def display_film_baseline(film):
     print('-------')
     print('Percentage of Upset facial expressions: ' + '{:.0%}'.format(upset_emotion_percentage))
     print('Instances of laughter, per minute:',
-          round(subtitle_nocreds_df.laugh.sum() / (len(vision_nocreds_df) / 60), 2))
+          round(sentence_df.laugh.sum() / (len(vision_nocreds_df) / 60), 2))
     if profanity_per_word == 0:
         print('The film contains no profanity.')
     else:
         print('One in', round(1 / profanity_per_word), 'words is a profanity.')
-
-
