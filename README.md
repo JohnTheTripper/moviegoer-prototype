@@ -16,14 +16,7 @@ Though portions of this project will be heavily reliant on pre-trained models an
 ## Why Movies?
 Movies are chronologically linear, with clear cause-and-effect. Characters are established, emotional experiences happen to them, and they change. Consider a small-scale example: we see a character smiling, and two seconds later he’s frowning. What happened in those two seconds? Someone has said to him “I hate you”. We recognize this specific piece of dialogue is the antecedent, or stimulus to his emotional change.
 
-See the three-part blog series on background information on why movies are the ultimate dataset of emotional knowledge:
-
-[The Case for Teaching Emotion to AI by Having Them Watch Movies](https://towardsdatascience.com/moviegoer-the-case-for-teaching-emotion-to-ai-by-having-them-watch-movies-b2a7682edb1d)
-
-[Prototype in Action: Turning Movies into Emotional Data](https://towardsdatascience.com/moviegoer-prototype-in-action-turning-movies-into-emotional-data-480b5a3497c8)
-
-[5 Reasons Why Cinema is the Perfect Dataset of Emotional and Anthropological Knowledge](https://towardsdatascience.com/moviegoer-5-reasons-why-cinema-is-the-perfect-dataset-of-emotional-and-anthropological-knowledge-db8b0aa96ff7)
-
+Some additional information on why movies are the ultimate dataset of emotional knowledge can be found at [moviegoer.ai](https://moviegoer.ai).
 
 # Four Categories of Comprehension
 Continued progress has helped clarify the overall goals of the project — we’ve identified four broad categories of knowledge that Moviegoer must identify and recognize. These categories aren’t tied to any specific aspect of the tech stack, and advances in one category may support another. Much like a human viewer, a machine must be able to parse four categories of comprehension to “watch a movie”: film structure; characters; plot and events; and style features.
@@ -54,6 +47,8 @@ This category of comprehension is simultaneously the most powerful as well as th
 
 # Repository Files
 This project contains several directories, each focused on a separated task. **Each directory has its own Readme file**, going into further detail on contents and design decisions.
+
+For the purposes of the prototype, functions are contained within each individual module directory. This is for the purposes of small-scale development and demonstration of self-contained functionality. They will be eventually be moved into a single directory with a proper init.py file.
 
 ## Data Exploration and Function Creation
 Since a movie can be broken into three streams of data, there is one directory each for Vision, Audio, and Subtitle. These directories contain exploratory Jupyter notebooks, essentially playing with the data to see what features can be unearthed. After this EDA, function files are created, for later reference.
@@ -104,5 +99,10 @@ This project uses a number of Python libraries. As of the creation of the protot
 - Audio
   - pyAudioAnalysis 0.3
   - Librosa 0.7
+
+### Contact
+[moviegoer.ai](https://moviegoer.ai)
+
+[contact@moviegoer.ai](mailto:contact@moviegoer.ai)
 
 This project is strictly for non-commercial educational and research purposes.
