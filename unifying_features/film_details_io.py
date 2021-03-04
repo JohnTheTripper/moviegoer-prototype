@@ -88,7 +88,6 @@ def display_film_baseline(film):
 
     upset_emotion_percentage = get_upset_percentage(face_nocreds_df)
     words_per_sentence = get_words_per_sentence(sentence_df)
-    profanity_per_word = get_profanity_per_word(sentence_df)
 
     print('---------')
     print('Technical')
@@ -109,8 +108,5 @@ def display_film_baseline(film):
     print('-------')
     print('Percentage of Upset facial expressions: ' + '{:.0%}'.format(upset_emotion_percentage))
     print('Instances of laughter, per minute:',
-          round(sentence_df.laugh.sum() / (len(vision_nocreds_df) / 60), 2))
-    if profanity_per_word == 0:
-        print('The film contains no profanity.')
-    else:
-        print('One in', round(1 / profanity_per_word), 'words is a profanity.')
+          round(subtitle_df.laugh.sum() / (len(vision_nocreds_df) / 60), 2))
+    get_profanity_per_word(sentence_df)
