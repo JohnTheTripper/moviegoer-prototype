@@ -14,8 +14,11 @@ generated_data/
 # Saved Models
 saved_models/
 
-# Archive
+# Archive/Depreciated/Auxiliary Folders and Modules
 code_archive/
+depreciated_modules/
+dataset_extraction/
+modeling/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
