@@ -4,6 +4,10 @@ from serialization_preprocessing_io import *
 
 
 def generate_nocreds_dfs(vision_df, face_df):
+    """
+    returns vision dataframes without the credits
+    currently looks for the final frame with a face, and uses that as the last frame before credits
+    """
     frame_before_credits = face_df[face_df['faces_found'] > 0].tail(1).index[0]  # final frame before credits
     vision_nocreds_df = vision_df[0:frame_before_credits].copy()
     face_nocreds_df = face_df[0:frame_before_credits].copy()

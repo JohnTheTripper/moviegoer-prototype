@@ -61,7 +61,6 @@ def dialogue_breaks(subtitle_df, threshold=10):
         if subtitle_df.iloc[x].cleaned_text or subtitle_df.iloc[x].laugh == 1:
             y = 1
 
-            #while not subtitle_df.iloc[x - y].cleaned_text and subtitle_df.iloc[x - y].laugh == 0:
             while not subtitle_df.iloc[x - y].cleaned_text:
                 y += 1
             delay = datetime.combine(date.today(), subtitle_df.iloc[x].start_time) - datetime.combine(date.today(),

@@ -34,16 +34,6 @@ def generate_single_lines(subs):
     return single_lines
 
 
-'''
-def music_clean(line):                      # replicated below with separate find and clean functionality, depreciated
-    entire_line_music = 0
-    if line[:1] == '♪' and line[-1:] == '♪':
-        entire_line_music = 1
-        line = ''
-    return entire_line_music, line
-'''
-
-
 def find_music(line):
     """
     returns a flag denoting if music is present
@@ -62,17 +52,6 @@ def clean_music(line):
         return ''
     else:
         return line
-
-
-'''
-def parenthetical_clean(line):             # replicated below with separate find and clean functionality, depreciated
-    entire_line_parenthetical = 0
-    if line[:1] == '(' and line[-1:] == ')':
-        # entire_line_parenthetical = line[1:-1]
-        entire_line_parenthetical = line
-        line = ''
-    return entire_line_parenthetical, line
-'''
 
 
 def find_parenthetical(line):
@@ -163,17 +142,6 @@ def clean_italic(line):
     return line
 
 
-'''
-def speaker_clean(line):                    # replicated below without clean, will be depreciated
-    colon_find = line.find(':')
-    speaker = 'none'
-    if colon_find != -1 and line[0:colon_find].isupper():
-        speaker = line[0:colon_find]
-        line = line[colon_find + 2:]
-    return speaker, line
-'''
-
-
 def find_speaker(line):
     """
     returns offscreen speaker name, if labeled
@@ -196,18 +164,6 @@ def clean_speaker(line):
     return line
 
 
-'''
-def laugh_clean(line):                       # replicated below without clean, will be depreciated
-    laugh_found = 0
-    laugh_strings = ['(laughing)', '(laughs)', '(laughter)', '(chuckles)', '(chuckling)']
-    for laugh in laugh_strings:
-        if laugh in line:
-            laugh_found = 1
-            line = line.replace(laugh, '')
-    return laugh_found, line
-'''
-
-
 def find_laugh(line):
     """
     returns flag denoting if laughter found
@@ -218,60 +174,6 @@ def find_laugh(line):
         if laugh in line.lower():
             laugh_found = 1
     return laugh_found
-
-
-'''
-def clean_subs(subs):                   # replicated below, may be depreciated
-
-    cleaned_lines = []
-
-    single_lines = generate_single_lines(subs)
-    for line in single_lines:
-        entire_line_italic, line = italic_clean(line)
-
-        entire_line_music, line = music_clean(line)
-
-        laugh_found, line = laugh_clean(line)
-
-        speaker, line = speaker_clean(line)
-
-        entire_line_parenthetical, line = parenthetical_clean(line)
-
-        cleaned_lines.append(line)
-
-    return cleaned_lines
-'''
-'''
-def clean_and_flag_subs(subs):                      # depreciate
-    italic_flags = []
-    music_flags = []
-    laugh_flags = []
-    speakers = []
-    entire_line_parentheticals = []
-
-    cleaned_lines = []
-
-    single_lines = generate_single_lines(subs)
-    for line in single_lines:
-        entire_line_italic, line = italic_clean(line)
-        italic_flags.append(entire_line_italic)
-
-        entire_line_music, line = music_clean(line)
-        music_flags.append(entire_line_music)
-
-        laugh_found, line = laugh_clean(line)
-        laugh_flags.append(laugh_found)
-
-        speaker, line = speaker_clean(line)
-        speakers.append(speaker)
-
-        entire_line_parenthetical, line = parenthetical_clean(line)
-        entire_line_parentheticals.append(entire_line_parenthetical)
-
-        cleaned_lines.append(line)
-
-    return cleaned_lines, italic_flags, music_flags, laugh_flags, speakers, entire_line_parentheticals
-'''
 
 
 def clean_line(line):
