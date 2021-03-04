@@ -48,7 +48,7 @@ This category of comprehension is simultaneously the most powerful as well as th
 # Repository Files
 This project contains several directories, each focused on a separated task. **Each directory has its own Readme file**, going into further detail on contents and design decisions.
 
-For the purposes of the prototype, functions are contained within each individual module directory. This is for the purposes of small-scale development and demonstration of self-contained functionality. They will be eventually be moved into a single directory with a proper init.py file.
+For the purposes of the prototype, functions are contained within each individual module directory. This is for the purposes of small-scale development and demonstration of self-contained functionality. They will be eventually be centralized in a single directory with a proper init.py file.
 
 ## Data Exploration and Function Creation
 Since a movie can be broken into three streams of data, there is one directory each for Vision, Audio, and Subtitle. These directories contain exploratory Jupyter notebooks, essentially playing with the data to see what features can be unearthed. After this EDA, function files are created, for later reference.
