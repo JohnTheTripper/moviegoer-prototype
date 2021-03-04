@@ -8,6 +8,9 @@ from subtitle_dataframes_io import *
 
 
 def generate_scene_level_dfs(scene_dict, vision_df, face_df, subtitle_df, sentence_df):
+    """
+    creates scene-level dataframes from an individual entry from the scene dictionary
+    """
     vision_scene_df = vision_df[scene_dict['first_frame'] - 1:scene_dict['last_frame']]
     face_scene_df = face_df[scene_dict['first_frame'] - 1:scene_dict['last_frame']]
     scene_start_time = frame_to_time(scene_dict['first_frame'])
@@ -29,6 +32,9 @@ def generate_scene_level_dfs(scene_dict, vision_df, face_df, subtitle_df, senten
 
 
 def get_scene_cadence(vision_scene_df, subtitle_scene_df):
+    """
+    returns the number of words per minute in a scene
+    """
     scene_duration = len(vision_scene_df)
     cadence = len(subtitle_scene_df) / (scene_duration / 60)
 
@@ -43,6 +49,10 @@ def get_scene_cadence(vision_scene_df, subtitle_scene_df):
 
 
 def get_scene_ppw(sentence_scene_df):
+    """
+    returns the proportion of profanity in a scene
+    useful as a measure of drama, especially against the film baseline
+    """
     space_count = 0
     sentence_list = sentence_scene_df.sentence.tolist()
     for sentence in sentence_list:
@@ -64,6 +74,11 @@ def get_scene_ppw(sentence_scene_df):
 
 
 def display_scene_important_phrases(sentence_df, sentence_scene_df, nlp):
+    """
+    prints potentially important phrases of a scene:
+    noun chunks
+    tf-idf phrases vs. the entire movie
+    """
     # tf_idf data preparation
     film_doc_df = sentence_df.copy()
     film_doc_df.drop(range(sentence_scene_df.index.start, sentence_scene_df.index.stop), inplace=True)
@@ -105,6 +120,12 @@ def display_scene_important_phrases(sentence_df, sentence_scene_df, nlp):
 
 
 def display_scene_important_sentences(sentence_scene_df, nlp):
+    """
+    prints potentially important sentences of a scene
+    directed questions and responses - questions directly addressing "you", and the next sentence
+    first-person declarations - sentences with "I" as the subject
+    second-person addresses - sentences addressing "you"
+    """
     # nlp prep
     scene_sentence_doc = nlp((' '.join(sentence_scene_df.sentence.tolist())))
     sent_nlp_list = list(scene_sentence_doc.sents)
@@ -159,6 +180,9 @@ def display_scene_important_sentences(sentence_scene_df, nlp):
 
 
 def display_scene_start_end(sentence_scene_df):
+    """
+    prints the first and last three lines of a scene
+    """
     scene_sentences = sentence_scene_df.sentence.tolist()
     print('-------------------------------')
     print('Icebreaker (Conversation Start)')            # first three sentences of scene
