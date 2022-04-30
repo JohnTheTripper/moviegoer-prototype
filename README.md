@@ -1,5 +1,5 @@
 # Update
-This repository is no longer maintained, though progress on Moviegoer continues! The latest project updates can be found at [moviegoer.ai]
+This repository is no longer maintained, though progress on Moviegoer continues! The latest project updates can be found at [moviegoer.ai](https://moviegoer.ai).
 
 # Project Overview and Scope
 
