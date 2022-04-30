@@ -1,3 +1,6 @@
+# Update
+This repository is no longer maintained, though progress on Moviegoer continues! The latest project updates can be found at [moviegoer.ai]
+
 # Project Overview and Scope
 
 ![logo](/readme_images/logo.png "logo")
